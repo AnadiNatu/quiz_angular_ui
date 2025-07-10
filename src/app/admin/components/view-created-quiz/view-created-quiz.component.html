@@ -1,0 +1,36 @@
+<div class="container mt-5">
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="createdQuiz">
+    <div class="card shadow mb-4">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Quiz: {{ createdQuiz.title }}</h4>
+      </div>
+      <div class="card-body">
+        <p><strong>Category:</strong> {{ createdQuiz.category }}</p>
+        <p><strong>Difficulty:</strong> {{ createdQuiz.difficultyLevel }}</p>
+        <p><strong>Created By:</strong> {{ createdQuiz.creatorName }}</p>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <h5 class="text-secondary">Questions:</h5>
+      <div *ngFor="let question of createdQuiz.questionList; let i = index" class="card mb-3">
+        <div class="card-body">
+          <p><strong>Q{{ i + 1 }}:</strong> {{ question.questionTitle }}</p>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">A. {{ question.option1 }}</li>
+            <li class="list-group-item">B. {{ question.option2 }}</li>
+            <li class="list-group-item">C. {{ question.option3 }}</li>
+            <li class="list-group-item">D. {{ question.option4 }}</li>
+          </ul>
+          <p class="mt-2 text-success"><strong>Correct Answer:</strong> {{ question.rightAnswer }}</p>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-secondary" (click)="goBack()">← Back to Dashboard</button>
+  </div>
+</div>

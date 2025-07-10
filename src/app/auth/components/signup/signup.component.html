@@ -1,0 +1,37 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card p-4 shadow-lg w-100" style="max-width: 500px;">
+    <h2 class="text-center mb-4">Create Account</h2>
+    <form (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input class="form-control" [(ngModel)]="signUpData.name" name="name" placeholder="Full Name" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input class="form-control" [(ngModel)]="signUpData.username" name="username" placeholder="Email" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input class="form-control" [(ngModel)]="signUpData.password" name="password" placeholder="Password" type="password" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Age</label>
+        <input class="form-control" [(ngModel)]="signUpData.age" name="age" type="number" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Role Number</label>
+        <input class="form-control" [(ngModel)]="signUpData.roleNumber" name="roleNumber" type="number" required />
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+    </form>
+    <div class="text-center mt-3">
+      <a routerLink="/login" class="text-decoration-none">Already have an account? Login</a>
+    </div>
+  </div>
+</div>
+

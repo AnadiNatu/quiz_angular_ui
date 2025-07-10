@@ -1,0 +1,45 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Participant Quiz</h2>
+
+  <!-- Search Quiz -->
+  <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="input-group mb-4">
+    <input type="text" class="form-control" formControlName="searchQuiz" placeholder="Enter quiz title..." />
+    <button type="submit" class="btn btn-primary">Search Quiz</button>
+  </form>
+
+  <!-- Quiz Title -->
+  <div *ngIf="quizTitle && questions.length > 0" class="mb-4">
+    <h4 class="text-success">Quiz: {{ quizTitle }}</h4>
+  </div>
+
+  <!-- Quiz Form -->
+  <form *ngIf="questions.length > 0 && !submitted" [formGroup]="responseForm" (ngSubmit)="submitQuiz()">
+    <div *ngFor="let q of questions" class="mb-4 p-3 border rounded shadow-sm bg-light">
+      <p class="fw-bold">{{ q.questionTitle }}</p>
+      <div class="form-check" *ngFor="let opt of [q.option1, q.option2, q.option3, q.option4]">
+        <input class="form-check-input" type="radio" [value]="opt" [formControlName]="q.questionTitle" [id]="q.questionTitle + opt">
+        <label class="form-check-label" [for]="q.questionTitle + opt">
+          {{ opt }}
+        </label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit Quiz</button>
+  </form>
+
+  <!-- Evaluation Result -->
+  <div *ngIf="submitted && evaluations.length > 0" class="mt-5">
+    <h3>Evaluation</h3>
+    <div *ngFor="let eval of evaluations" class="border-bottom pb-3 mb-3">
+      <p><strong>Question:</strong> {{ eval.questionTitle }}</p>
+      <p><strong>Your Answer:</strong>
+        <span *ngIf="eval.participantAnswer; else noAnswer">{{ eval.participantAnswer }}</span>
+        <ng-template #noAnswer><em>No answer provided</em></ng-template>
+      </p>
+      <p><strong>Correct Answer:</strong> {{ eval.correctAnswer }}</p>
+    </div>
+
+    <button class="btn btn-primary" (click)="goToResult()">View Final Result</button>
+  </div>
+</div>
+<!-- Add a functionality to see all the quiz and quiz based on category from the  -->

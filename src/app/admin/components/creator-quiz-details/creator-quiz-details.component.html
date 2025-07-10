@@ -1,0 +1,18 @@
+<p>creator-quiz-details works!</p>
+
+<div class="container mt-4">
+  <div class="alert alert-danger">{{errorMessage}}</div>
+
+  <div *ngIf="quizDetail">
+    <h3>Quiz : {{quizTitle}}</h3>
+    <p><strong>Creator : </strong>{{quizDetail.creatorName}}</p>
+    <p><strong>Roles : </strong>{{quizDetail.userRoles}}</p>
+
+    <h5 class="mt-3">Questions</h5>
+    <ul class="list-group">
+      <li *ngFor="let question of quizDetail.questionTitleList" class="list-group-item">
+        {{question}}
+      </li>
+    </ul>
+  </div>
+</div>

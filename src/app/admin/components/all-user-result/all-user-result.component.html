@@ -1,0 +1,37 @@
+<div class="container mt-4">
+  <h2 class="text-center text-primary mb-4">All Results for Quiz: {{ quizTitle }}</h2>
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p>Loading results...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger text-center">{{ error }}</div>
+
+  <table *ngIf="!loading && result.length > 0" class="table table-bordered table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>User ID</th>
+        <th>Username</th>
+        <th>Total Questions</th>
+        <th>Correct Answers</th>
+        <th>Incorrect Answers</th>
+        <th>Percentage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let res of result">
+        <td>{{ res.userId }}</td>
+        <td>{{ res.userName }}</td>
+        <td>{{ res.totalQuestion }}</td>
+        <td>{{ res.correctAnswer }}</td>
+        <td>{{ res.incorrectAnswer }}</td>
+        <td>{{ res.percentage }}%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && result.length === 0" class="alert alert-warning text-center">
+    No Results Available For This Quiz.
+  </div>
+</div>

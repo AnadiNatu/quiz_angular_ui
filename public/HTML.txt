@@ -1,0 +1,582 @@
+HEY CHAT CAN YOU MAKE PRESENTABLE CSS FOR THE BELOW GIVEN HTML CODE MY ANGULAR FRONTEND PRODUCT. PLEASE MAKE ALL THE COMPONENT WITH BACKGROUNG THEME OF BLACK TO GREYISH-WHITE TOP-DOWN GRADIENT WITH A SHADOW EFFECT . I WANT SEPARATED CSS FOR EACH OF THE COMPONENT
+
+ADMIN COMPONENTS
+
+1.)
+<p>admin-dasboard works!</p>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<div class="container-fluid">
+   <a class="navbar-brand" [routerLink]="['/']">Admin Panel</a>
+     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav" aria-controls="navbarNav"
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a [routerLink]="['/create-quiz']" class="nav-link">Create Quiz</a>
+            </li>
+
+            <li class="nav-item">
+                <a [routerLink]="['/create-question']" class="nav-link">Create Question</a>
+            </li>
+
+            <li class="nav-link">
+                <a [routerLink]="['/creator/quizzes']" class="nav-link">My Quizzes</a>
+            </li>
+
+            <li class="nav-item">
+                <a [routerLink]="['results/all' , quizTitle]" class="nav-link">All Result</a>
+            </li>
+        </ul>
+    </div>
+</div>
+</nav>
+
+<!-- Navbar here as before -->
+
+<div class="container mt-4">
+  <div class="row">
+    <!-- Left Half: Quizzes Created -->
+    <div class="col-md-6">
+      <h4 class="text-primary">Your Created Quizzes</h4>
+      <app-creator-quiz-list></app-creator-quiz-list>
+    </div>
+
+    <!-- Right Half: Quizzes Taken -->
+    <div class="col-md-6">
+      <h4 class="text-success">Quizzes You've Taken</h4>
+      <ul class="list-group">
+        <li 
+          class="list-group-item d-flex justify-content-between align-items-center"
+          *ngFor="let title of takenQuizzes">
+          {{ title }}
+          <button class="btn btn-outline-primary btn-sm" (click)="viewParticipantResult(title)">
+            View Result
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<div class="container mt-4">
+  <h2>Welcome to the Admin Dashboard</h2>
+  <p>Use the navigation bar to manage quizzes, questions, and view results.</p>
+</div>
+
+2.)
+<p>all-user-result works!</p>
+<h2>All Result For Quiz : {{quizTitle}}</h2>
+
+<div *ngIf="loading">Loading...</div>
+<div *ngIf="error" class="error">{{error}}</div>
+
+<table *ngIf="!loading && result.length > 0" border="1" cellpadding="8" , cellspacing="0">
+    <thead>
+        <tr>
+            <th>User Id</th>
+            <th>Username</th>
+            <th>Total Question</th>
+            <th>Correct Answer</th>
+            <th>Incorrect Answer</th>
+            <th>Percentage</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let res of result">
+            <td>{{res.userId}}</td>
+            <td>{{res.userName}}</td>
+            <td>{{res.totalQuestion}}</td>
+            <td>{{res.correctAnswer}}</td>
+            <td>{{res.incorrectAnswer}}</td>
+            <td>{{res.percentage}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<p *ngIf="!loading && result.length === 0">No Results Available For This Quiz</p>
+
+3.)
+<p>create-question works!</p>
+<div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0 text-center">Create New Question</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="questionForm" (ngSubmit)="submitQuestion()">
+
+        <div class="mb-3">
+          <label class="form-label">Question Title</label>
+          <input type="text" class="form-control" formControlName="questionTitle" placeholder="Enter question">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Category</label>
+          <select class="form-select" formControlName="category">
+            <option value="">Select category</option>
+            <option value="Math">Math</option>
+            <option value="Science">Science</option>
+            <option value="History">History</option>
+            <option value="Programming">Programming</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Difficulty Level</label>
+          <select class="form-select" formControlName="difficultyLevel">
+            <option value="">Select difficulty</option>
+            <option value="EASY">Easy</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HARD">Hard</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Option 1</label>
+            <input type="text" class="form-control" formControlName="option1">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Option 2</label>
+            <input type="text" class="form-control" formControlName="option2">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Option 3</label>
+            <input type="text" class="form-control" formControlName="option3">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Option 4</label>
+            <input type="text" class="form-control" formControlName="option4">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Correct Answer</label>
+          <input type="text" class="form-control" formControlName="rightAnswer">
+        </div>
+
+        <button type="submit" class="btn btn-success w-100" [disabled]="questionForm.invalid">
+          Submit Question
+        </button>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+4.)
+<p>create-quiz works!</p>
+<div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-success text-white text-center">
+      <h4>Create New Quiz</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="quizForm" (ngSubmit)="createQuiz()">
+
+        <div class="mb-3">
+          <label class="form-label">Title</label>
+          <input type="text" class="form-control" formControlName="title" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" formControlName="description"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Total Marks</label>
+          <input type="number" class="form-control" formControlName="totalMarks" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Number of Questions</label>
+          <input type="number" class="form-control" formControlName="numberOfQuestion" />
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100" [disabled]="quizForm.invalid">Create Quiz</button>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+5.)
+<p>creator-quiz-details works!</p>
+
+<div class="container mt-4">
+  <div class="alert alert-danger">{{errorMessage}}</div>
+
+  <div *ngIf="quizDetail">
+    <h3>Quiz : {{quizTitle}}</h3>
+    <p><strong>Creator : </strong>{{quizDetail.creatorName}}</p>
+    <p><strong>Roles : </strong>{{quizDetail.userRoles}}</p>
+
+    <h5 class="mt-3">Questions</h5>
+    <ul class="list-group">
+      <li *ngFor="let question of quizDetail.questionTitleList" class="list-group-item">
+        {{question}}
+      </li>
+    </ul>
+  </div>
+</div>
+
+6.)
+<p>creator-quiz-list works!</p>
+
+<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+<ul class="list-group">
+  <li *ngFor="let quiz of quizzes" class="list-group-item d-flex justify-content-between align-items-center">
+    <div>
+      <h6 class="mb-0">{{ quiz.title }}</h6>
+      <small>{{ quiz.category }} | {{ quiz.difficultyLevel }}</small>
+    </div>
+    <button class="btn btn-sm btn-outline-primary" (click)="viewQuizDetails(quiz.title)">View Questions</button>
+  </li>
+</ul>
+
+<div *ngIf="quizzes.length === 0 && !errorMessage">
+  <p class="text-muted">No quizzes found.</p>
+</div>
+
+7.)
+<p>participant-quiz works!</p>
+<h2>Quiz: {{ quizTitle }}</h2>
+
+<form *ngIf="questions.length > 0 && !submitted" [formGroup]="responseForm" (ngSubmit)="submitQuiz()">
+  <div *ngFor="let q of questions" class="question-block">
+    <p><strong>{{ q.questionTitle }}</strong></p>
+    <div *ngFor="let opt of [q.option1, q.option2, q.option3, q.option4]">
+      <label>
+        <input type="radio" [value]="opt" [formControlName]="q.questionTitle" />
+        {{ opt }}
+      </label>
+    </div>
+    <hr />
+  </div>
+
+  <button type="submit">Submit Quiz</button>
+</form>
+
+<!-- Evaluation Result -->
+<div *ngIf="submitted && evaluations.length > 0">
+  <h3>Evaluation:</h3>
+  <ul>
+    <li *ngFor="let eval of evaluations">
+      <p><strong>Question:</strong> {{ eval.questionTitle }}</p>
+      <p><strong>Your Answer:</strong>
+        <span *ngIf="eval.participantAnswer; else noAnswer">{{ eval.participantAnswer }}</span>
+        <ng-template #noAnswer><em>No answer provided</em></ng-template>
+      </p>
+      <p><strong>Correct Answer:</strong> {{ eval.correctAnswer }}</p>
+      <hr />
+    </li>
+  </ul>
+
+  <!-- Button to go to Result -->
+  <button (click)="goToResult()">View Final Result</button>
+</div>
+
+8.)
+<p>quiz-result works!</p>
+
+<div class="container mt-4" *ngIf="isLoaded && result">
+  <div class="card">
+    <div class="card-header bg-info text-white">
+      <h4>Result for "{{ result.quizTitle }}"</h4>
+    </div>
+    <div class="card-body">
+      <p><strong>User:</strong> {{ result.userName }}</p>
+      <p><strong>Total Questions:</strong> {{ result.totalQuestion }}</p>
+      <p><strong>Correct:</strong> {{ result.correctAnswer }}</p>
+      <p><strong>Incorrect:</strong> {{ result.incorrectAnswer }}</p>
+      <p><strong>Score:</strong> {{ result.percentage }}%</p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="hasError" class="alert alert-danger mt-4">
+  Error loading result. Please try again later.
+</div>
+
+9.)
+<p>view-created-quiz works!</p>
+<div class="container mx-auto p-4 max-w-3xl">
+    <div *ngIf = "errorMessage" class="text-red-600 font-semibold">
+        {{errorMessage}}
+    </div>
+
+    <div *ngIf = "createdQuiz">
+        <h2 class="text-2xl font-bold mb-2">Quiz : {{createdQuiz.title}}</h2>
+       <p><strong>Category:</strong> {{ createdQuiz.category }}</p>
+       <p><strong>Difficulty:</strong> {{ createdQuiz.difficultyLevel }}</p>
+       <p><strong>Created by:</strong> {{ createdQuiz.creatorName }}</p>
+
+       <hr class="my-4">
+
+       <h3 class="text-xl font-semibold mb-2">Questions</h3>
+       <div *ngFor="let question of createdQuiz.questionList , let i = index" class="mb-4 p-4 border rounded shadow-sm">
+        <p><strong>Q{{i + 1}} : </strong>{{question.questionTitle}}</p>
+        <ul class="list-disc pl-6">
+            <li> A . {{question.option1}}</li>
+            <li> B . {{question.option2}}</li>
+            <li> C . {{question.option3}}</li>
+            <li> D . {{question.option4}}</li>
+        </ul>
+        <p class="mt-2 text-green-700"><strong>Correct Answer:</strong> {{ question.rightAnswer }}</p>
+       </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+HEY CHAT CAN YOU MAKE PRESENTABLE CSS FOR THE BELOW GIVEN HTML CODE MY ANGULAR FRONTEND PRODUCT. PLEASE MAKE ALL THE COMPONENT WITH BACKGROUNG THEME OF BLACK TO GREYISH-WHITE TOP-DOWN GRADIENT WITH A SHADOW EFFECT . I WANT SEPARATED CSS FOR EACH OF THE COMPONENT
+
+AUTH COMPONENTS
+
+1.)
+<p>forgot-password works!</p>
+<div class="container mt-4">
+
+    <h2>Forgot Password</h2>
+    <form (ngSubmit) = "onSubmit()">
+        <div class="form-group">
+            <label> Email </label>
+            <input [(ngModel)]="email" name="email" required type="email" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Send Reset Password</button>
+    </form>
+    <p class="text-success mt-3" *ngIf="message">{{ message }}</p>
+    <p class="text-danger mt-3" *ngIf="error">{{ error }}</p>
+</div>
+
+2.)
+<p>home works!</p>
+
+<div class="container text-center mt-5">
+    <h1>Welcome To Quiz Application</h1>
+    <p>Please LOGIN or SIGNUP to continue</p>
+    <button routerLink="/login" class="btn btn-primary m-2">Login</button>
+    <button routerLink="/signup" class="btn btn-primary m-2">Sign Up</button>
+</div>
+
+3.)
+<p>login works!</p>
+<form (ngSubmit)="onSubmit()">
+  <input class="form-control" [(ngModel)]="loginData.username" name="username" placeholder="Email" required>
+  <input class="form-control" [(ngModel)]="loginData.password" name="password" type="password" placeholder="Password" required>
+  <button type="submit" class="btn btn-success mt-2">Login</button>
+</form>
+
+<div class="mt-3">
+  <a routerLink = "/forgot-password" class="btn btn-link p-0">Forgot Password</a>
+  <hr>
+  <a routerLink = "/reset-password" class="btn btn-link p-0">Reset Password</a>
+</div>
+
+4.)
+<p>reset-password works!</p>
+
+<div class="container mt-4">
+  <h2>Reset Password</h2>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Email</label>
+      <input [(ngModel)]="email" name="email" type="email" required class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Reset Token</label>
+      <input [(ngModel)]="token" name="token" required class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>New Password</label>
+      <input [(ngModel)]="newPassword" name="newPassword" type="password" required class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-success mt-3">Reset Password</button>
+  </form>
+
+  <p class="text-success mt-3" *ngIf="message">{{ message }}</p>
+  <p class="text-danger mt-3" *ngIf="error">{{ error }}</p>
+</div>
+
+5.)
+<p>signup works!</p>
+<form (ngSubmit)="onSubmit()">
+  <input class="form-control" [(ngModel)]="signUpData.name" name="name" placeholder="Full Name" required>
+  <input class="form-control" [(ngModel)]="signUpData.username" name="username" placeholder="Email" required>
+  <input class="form-control" [(ngModel)]="signUpData.password" name="password" placeholder="Password" type="password" required>
+  <input class="form-control" [(ngModel)]="signUpData.age" name="age" placeholder="Age" type="number" required>
+  <input class="form-control" [(ngModel)]="signUpData.roleNumber" name="roleNumber" placeholder="Role Number" type="number" required>
+  <button type="submit" class="btn btn-primary mt-2">Sign Up</button>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hey chat there are errors coming in my component and the ROUTING IS NOT CORRECT can you fix these problems for me . And I want you write the html with bootstrap using proper classes to make the html for them . And make proper EDIT IN THE .TS AND HTML FILES of the component  for routing . WHEN CLICK ON ANY OF THE LINKS ON THE DASHBOARD I'M REDIRECTED TO THE LOGIN PAGE . And can you add routing from the "ADMIN-DASHBOARD" TO THIS COMPONET AND BACK TO ADMIN-DASHBOARD
+
+"login.component.ts"
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
+})
+export class LoginComponent {
+
+  loginData : LoginAuthRequest = {username: '' , password: ''};
+
+  constructor(private auth :AuthService , private router : Router , private userStorage : UserStorageService){}
+
+  onSubmit() : void{
+    this.auth.login(this.loginData).subscribe({
+      next: () => {
+        const user = this.userStorage.getUser();
+        console.log('User after Login: ' , user)
+        const role = this.userStorage.getUserRole(); 
+        console.log('User Role: ' , role);        
+
+         if (role === UserRoles.ADMIN) {
+          this.router.navigate(['/admin']);
+        } else if (role === UserRoles.PARTICIPANT) {
+          this.router.navigate(['/participant']);
+        }else if(role === UserRoles.CREATOR){
+          this.router.navigate(['/creator']);
+        } 
+        else {
+          alert('Unknown role detected. Redirect failed.');
+        }
+      },
+      error: err => alert('Login Failed: ' + err.error)
+    });
+  }
+}
+
+"login.component.html"
+<p>login works!</p>
+<form (ngSubmit)="onSubmit()">
+  <input class="form-control" [(ngModel)]="loginData.username" name="username" placeholder="Email" required>
+  <input class="form-control" [(ngModel)]="loginData.password" name="password" type="password" placeholder="Password" required>
+  <button type="submit" class="btn btn-success mt-2">Login</button>
+</form>
+
+<div class="mt-3">
+  <a routerLink = "/forgot-password" class="btn btn-link p-0">Forgot Password</a>
+  <hr>
+  <a routerLink = "/reset-password" class="btn btn-link p-0">Reset Password</a>
+</div>
+
+Hey chat then can you properly loadComponent properly for standalone . And fix the routing files for me  
+
+app.routes.ts
+export const routes: Routes = [
+    {path : '' , component : HomeComponent},
+    {path : 'home' , redirectTo: '' , pathMatch: 'full'},
+    {path : 'login' , component : LoginComponent},
+    {path : 'signup' , component : SignupComponent},
+    {path : 'forgot-password' , component : ForgotPasswordComponent},
+    {path : 'reset-password' , component : ResetPasswordComponent},
+
+    // Lazy loading admin routes
+    {path : 'admin' , loadChildren : () => import('./admin/admin.routes').then((m) => m.adminRoutes)},
+
+        { path: '**', redirectTo: '' },
+    
+];
+
+admin.routes.ts
+export const adminRoutes : Routes = [
+    {path : '' , loadComponent : () => import('./components/admin-dasboard/admin-dasboard.component').then(m => m.AdminDasboardComponent)},
+    {path : 'create-quiz' , loadComponent : () => import('./components/create-quiz/create-quiz.component').then(m => m.CreateQuizComponent)},
+    {path : 'create-question' , loadComponent : () => import('./components/create-question/create-question.component').then(m => m.CreateQuestionComponent)}, 
+    {path : 'quiz/view/:quizTitle' , loadComponent : ()=> import('./components/view-created-quiz/view-created-quiz.component').then(m => m.ViewCreatedQuizComponent)},
+    {path : 'creator/quizzes' , loadComponent : () => import('./components/creator-quiz-list/creator-quiz-list.component').then(m => m.CreatorQuizListComponent)},
+    {path : 'creator/quiz-detail/:quizTitle' , loadComponent : () => import('./components/creator-quiz-details/creator-quiz-details.component').then(m => m.CreatorQuizDetailsComponent)},
+    {path : 'participant/quiz/:quizTitle' , loadComponent : () => import('./components/participant-quiz/participant-quiz.component').then(m => m.ParticipantQuizComponent)},
+    {path : 'participant/result/:quizTitle' , loadComponent : () => import('./components/quiz-result/quiz-result.component').then(m => m.QuizResultComponent)},
+    {path : 'results/all/:quizTitle' , loadComponent : () => import('./components/all-user-result/all-user-result.component').then(m => m.AllUserResultComponent)}
+]
+
+
+
+
+
+
+
+
+HEY CHAT I WANT TO ADD CSS TO THE COMPONENTS THAT WE HAVE MADE TILL NOW . SO I HAVE SOME POINTERS ON HOW I WOULD LIKE TO HAVE MY CSS THEMED AND HOW MY DATA NEEDS TO BE DISPLAYED . SO WHAT I WANT FROM YOU IS THAT I WILL GIVE POINTERS ON HOW DO I WANT CSS FOR FRONTEND OF THIS PROJECT . I WILL ALSO PROVIDE YOU WITH HTML FILES OF THE COMPONENTS ONE BY ONE SO THAT YOU APPLY THE CSS TO THEM . AND MAIN POINT TO REMEMBER THE ROUTING AND DATA-BINDING OF THE COMPONENTS ARE CORRECT AND WORKING . SO INSTEAD I WOULD YOU TO MAKE COMPONENTS WITH STATIC ROUTING AND DUMMY INPUTS , SO THAT I CAN HOW THE CHANGES ARE LOOKING AND WHAT ELSE NEED TO BE ADDED   
+
+CSS Pointer
+1. Establish a Cohesive Color Palette (BLUE & GREY & GREENISH PALETTE)
+2. Implement Smooth Micro-Animations
+3. Design Engaging Question Transitions
+4. Interactive Button & Form Styling
+5. Card-Based Design System
+6. Question Transition Animations
+7. Quiz-Specific Color Psychology & Branding
+8. Progress Indicator & Timer Styling
+9. Answer Option Interactive Design
+10. Quiz Dashboard & Category Layout
+11. Score Display & Results Animation
+12. Question Type Specific Styling
+13. Quiz Completion & Restart Flow

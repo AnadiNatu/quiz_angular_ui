@@ -1,0 +1,48 @@
+<div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-success text-white text-center">
+      <h4>Create New Quiz</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="quizForm" (ngSubmit)="createQuiz()">
+
+        <div class="mb-3">
+          <label class="form-label">Title</label>
+          <input type="text" class="form-control" formControlName="title" />
+          <div class="text-danger" *ngIf="quizForm.get('title')?.invalid && quizForm.get('title')?.touched">
+            Title is required
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" formControlName="description"></textarea>
+          <div class="text-danger" *ngIf="quizForm.get('description')?.invalid && quizForm.get('description')?.touched">
+            Description is required
+          </div>
+        </div>
+
+        <!-- <div class="mb-3">
+          <label class="form-label">Total Marks</label>
+          <input type="number" class="form-control" formControlName="totalMarks" />
+          <div class="text-danger" *ngIf="quizForm.get('totalMarks')?.invalid && quizForm.get('totalMarks')?.touched">
+            Enter valid total marks
+          </div>
+        </div> -->
+
+        <div class="mb-3">
+          <label class="form-label">Number of Questions</label>
+          <input type="number" class="form-control" formControlName="numberOfQuestion" />
+          <div class="text-danger" *ngIf="quizForm.get('numberOfQuestion')?.invalid && quizForm.get('numberOfQuestion')?.touched">
+            Enter valid number of questions
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100" [disabled]="quizForm.invalid">
+          Create Quiz
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- No to add a functonality to show how many question of that category are present -->

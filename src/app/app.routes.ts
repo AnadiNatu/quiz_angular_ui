@@ -1,3 +1,24 @@
 import { Routes } from '@angular/router';
+import { HomeComponent } from './auth/components/home/home.component';
+import { LoginComponent } from './auth/components/login/login.component';
+import { SignupComponent } from './auth/components/signup/signup.component';
+import { ForgotPasswordComponent } from './auth/components/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './auth/components/reset-password/reset-password.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+    {path : '' , component : HomeComponent},
+    {path : 'home' , redirectTo: '' , pathMatch: 'full'},
+    {path : 'login' , component : LoginComponent},
+    {path : 'signup' , component : SignupComponent},
+    {path : 'forgot-password' , component : ForgotPasswordComponent},
+    {path : 'reset-password' , component : ResetPasswordComponent},
+
+    // Lazy loading admin routes
+    {path : 'admin' , loadChildren : () => import('./admin/admin.routes').then((m) => m.adminRoutes)},
+
+        { path: '**', redirectTo: '' },
+    
+];
+
+
+// ❌ Wildcard route ** appearing before lazy routes .  And they chould appear last . Know about different "wildcard" paths
