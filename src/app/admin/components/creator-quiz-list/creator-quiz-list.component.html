@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<!-- <div class="container mt-4">
   <div *ngIf="errorMessage" class="alert alert-danger">
     {{ errorMessage }}
   </div>
@@ -15,6 +15,101 @@
         <button class="btn btn-outline-primary btn-sm" (click)="onViewQuiz(quiz.title)">
           View Questions
         </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="quizzes.length === 0 && !errorMessage" class="text-center text-muted mt-5">
+    <p>No quizzes found.</p>
+  </div>
+</div> -->
+
+<!-- <div class="container mt-4">
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div *ngIf="quizzes.length > 0">
+    <div class="card quiz-card shadow-sm mb-3"
+         *ngFor="let quiz of quizzes"
+         (mouseenter)="hovered = quiz.title"
+         (mouseleave)="hovered = ''"
+         [ngClass]="{ 'expanded': hovered === quiz.title }"
+         (click)="viewQuizDetails(quiz.title)">
+         
+      <div class="card-body">
+        <h5 class="card-title">{{ quiz.title }}</h5>
+        <p class="card-text" *ngIf="hovered === quiz.title">
+          <strong>Category:</strong> {{ quiz.category }}<br>
+          <strong>Difficulty:</strong> {{ quiz.difficultyLevel }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="quizzes.length === 0 && !errorMessage" class="text-center text-muted mt-5">
+    <p>No quizzes found.</p>
+  </div>
+</div> -->
+<!-- 
+<div class="quiz-list-container">
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div *ngIf="quizzes.length > 0">
+    <div
+      class="quiz-card"
+      *ngFor="let quiz of quizzes"
+      (mouseenter)="hovered = quiz.title"
+      (mouseleave)="hovered = ''"
+      [class.expanded]="hovered === quiz.title"
+    >
+      <h4>{{ quiz.title }}</h4>
+      <div class="quiz-details" *ngIf="hovered === quiz.title">
+        <p><strong>Category:</strong> {{ quiz.category }}</p>
+        <p><strong>Difficulty:</strong> {{ quiz.difficultyLevel }}</p>
+        <div class="card-buttons">
+          <button class="glass-button" (click)="viewQuizDetails(quiz.title); $event.stopPropagation();">Details</button>
+          <button class="glass-button" (click)="onViewQuiz(quiz.title); $event.stopPropagation();">Take Quiz</button>
+          <button class="glass-button alt" (click)="onViewResults(quiz.title); $event.stopPropagation();">See Result</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="quizzes.length === 0 && !errorMessage" class="text-center text-muted mt-5">
+    <p>No quizzes found.</p>
+  </div>
+</div> -->
+
+<div class="quiz-list-container">
+  <!-- Search Bar -->
+  <div *ngIf="showAllQuizzes" class="mb-4">
+    <input
+      type="text"
+      class="form-control"
+      [(ngModel)]="searchText"
+      placeholder="Search quizzes by title..."
+    />
+    <button class="btn btn-primary mt-2" (click)="onSearch()">Search</button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div *ngIf="quizzes.length > 0">
+    <div
+      class="quiz-card"
+      *ngFor="let quiz of quizzes"
+      (mouseenter)="hovered = quiz.title"
+      (mouseleave)="hovered = ''"
+      [class.expanded]="hovered === quiz.title"
+    >
+      <h4>{{ quiz.title }}</h4>
+      <div class="quiz-details" *ngIf="hovered === quiz.title">
+        <p><strong>Category:</strong> {{ quiz.category }}</p>
+        <p><strong>Difficulty:</strong> {{ quiz.difficultyLevel }}</p>
+        <div class="card-buttons">
+          <button class="glass-button" (click)="viewQuizDetails(quiz.title); $event.stopPropagation();">Details</button>
+          <button class="glass-button" (click)="onViewQuiz(quiz.title); $event.stopPropagation();">Take Quiz</button>
+          <button class="glass-button alt" (click)="onViewResults(quiz.title); $event.stopPropagation();">See Result</button>
+        </div>
       </div>
     </div>
   </div>

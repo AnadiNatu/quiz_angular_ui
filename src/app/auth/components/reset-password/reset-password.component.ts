@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ResetPasswordRequest } from '../../models/dtos';
 
 @Component({
@@ -12,14 +12,23 @@ import { ResetPasswordRequest } from '../../models/dtos';
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })
-export class ResetPasswordComponent {
+export class ResetPasswordComponent implements OnInit {
   email: string = '';
   token: string = '';
   newPassword: string = '';
   message: string = '';
   error: string = '';
 
-  constructor(private auth : AuthService , private router : Router){}
+  constructor(private auth : AuthService , private router : Router , private route : ActivatedRoute){}
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.token = params['token'] || '';
+      this.email = params['email'] || '';
+
+      console.log('🛠️ ResetPasswordComponent initialized with token:', this.token, 'and email:', this.email);
+    })
+  }
 
   onSubmit(){
     const request : ResetPasswordRequest = {
@@ -27,6 +36,8 @@ export class ResetPasswordComponent {
       token : this.token,
       newPassword : this.newPassword
     };
+
+    console.debug('🔐 Reset password request:', request);
 
     this.auth.resetPassword(request).subscribe({
       next: () => {
@@ -41,3 +52,5 @@ export class ResetPasswordComponent {
     });
   }
 }
+// THE EMAIL ENTERED IN THE LOGIN IS NOT VISIBLE IN THE RESET COMPONENT
+

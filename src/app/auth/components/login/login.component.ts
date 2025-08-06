@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LoginAuthRequest, UserRoles } from '../../models/dtos';
 import { UserStorageService } from '../../services/user-storage/user-storage.service';
 import { CommonModule } from '@angular/common';
@@ -9,36 +9,65 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule , RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+ loginData: LoginAuthRequest = {
+    username: '',
+    password: ''
+  };
+  
+  hovered: boolean = false;
+  isLoading: boolean = false;
+  errorMessage: string = '';
 
-  loginData : LoginAuthRequest = {username: '' , password: ''};
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private userStorage: UserStorageService
+  ) {}
 
-  constructor(private auth :AuthService , private router : Router , private userStorage : UserStorageService){}
+  onSubmit(): void {
+    console.debug('[Login] Submitting login form:', this.loginData);
+    this.isLoading = true;
+    this.errorMessage = '';
 
-  onSubmit() : void{
     this.auth.login(this.loginData).subscribe({
       next: () => {
         const user = this.userStorage.getUser();
-        console.log('User after Login: ' , user)
-        const role = this.userStorage.getUserRole(); 
-        console.log('User Role: ' , role);        
+        const role = this.userStorage.getUserRole();
 
-         if (role === UserRoles.ADMIN) {
-          this.router.navigate(['/admin']);
-        } else if (role === UserRoles.PARTICIPANT) {
-          this.router.navigate(['/participant']);
-        }else if(role === UserRoles.CREATOR){
-          this.router.navigate(['/creator']);
-        } 
-        else {
-          alert('Unknown role detected. Redirect failed.');
+        console.debug('[Login] User fetched from storage:', user);
+        console.debug('[Login] User Role:', role);
+
+        switch (role) {
+          case UserRoles.ADMIN:
+            console.debug('[Login] Navigating to /admin');
+            this.router.navigate(['/admin']);
+            break;
+          case UserRoles.PARTICIPANT:
+            console.debug('[Login] Navigating to /participant');
+            this.router.navigate(['/participant']);
+            break;
+          case UserRoles.CREATOR:
+            console.debug('[Login] Navigating to /creator');
+            this.router.navigate(['/creator']);
+            break;
+          default:
+            this.errorMessage = 'Unknown role detected. Redirect failed.';
+            console.error('[Login] Unknown role:', role);
         }
       },
-      error: err => alert('Login Failed: ' + err.error)
+      error: err => {
+        this.errorMessage = 'Login Failed: ' + (err?.error || 'Unknown error occurred.');
+        console.error('[Login] Error response:', err);
+      },
+      complete: () => {
+        this.isLoading = false;
+        console.debug('[Login] Request completed.');
+      }
     });
   }
 }

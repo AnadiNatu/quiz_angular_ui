@@ -1,7 +1,7 @@
 export enum UserRoles {
-    ADMIN = 'ADMIN', 
-    PARTICIPANT = 'PARTICIPANT', 
-    CREATOR = 'CREATOR'
+    ADMIN = 0, 
+    PARTICIPANT = 1, 
+    CREATOR = 2
 }
 
 export interface SignUpRequest {

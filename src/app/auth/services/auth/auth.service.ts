@@ -54,8 +54,15 @@ export class AuthService {
       responseType : 'blob'
     });
   }
+  
+  uploadProfilePicture(userId: number, file: File): Observable<string> {
+  const formData = new FormData();
+  formData.append('file', file);
 
-
+  return this.http.post(`${this.BASE_URL}/upload-profile-picture/${userId}`, formData, {
+    responseType: 'text'
+  });
+}
 }
 
   // How to Use This in a Component

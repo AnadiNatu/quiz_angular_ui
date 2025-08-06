@@ -1,0 +1,160 @@
+/* === Base Glass Card === */
+.glass-card {
+  background: rgba(173, 216, 230, 0.25); /* light blue */
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  transition: background 0.4s ease, transform 0.3s ease;
+  color: yellow;
+}
+
+/* Hover Mode */
+.glass-card:hover {
+  background: rgba(0, 51, 102, 0.6); /* dark blue */
+  transform: translateY(-4px);
+}
+
+/* === Navbar === */
+.glass-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  background: rgba(173, 216, 230, 0.25); /* light blue */
+  padding: 1rem 2rem;
+  border-radius: 0.8rem;
+  transition: background 0.4s ease;
+  backdrop-filter: blur(12px);
+}
+
+.glass-navbar:hover {
+  background: rgba(0, 51, 102, 0.6); /* dark blue */
+}
+
+/* Brand */
+.nav-left .brand {
+  color: #00bcd4;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Toggle button for mobile */
+.nav-toggle {
+  display: none;
+  font-size: 2rem;
+  color: yellow;
+  cursor: pointer;
+}
+
+/* Nav links as glass buttons */
+.nav-right {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.nav-right a {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 0.8rem;
+  text-decoration: none;
+  color: yellow;
+  transition: background 0.3s ease, transform 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.nav-right a:hover,
+.nav-right .active-link {
+  background: rgba(0, 188, 212, 0.4);
+  color: #fff;
+  transform: translateY(-2px);
+  font-weight: bold;
+}
+
+/* Responsive dropdown behavior */
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-right {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .nav-right.open {
+    display: flex;
+  }
+}
+
+/* === Profile Avatar === */
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 2px solid #00bcd4;
+}
+
+/* === Upload button === */
+.upload-btn {
+  display: inline-block;
+  background-color: #00bcd4;
+  padding: 0.5rem 1rem;
+  border-radius: 0.8rem;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.upload-btn:hover {
+  background-color: #2196f3;
+  color: white;
+}
+
+/* === Scrollable Quiz List === */
+.quiz-scroll-container {
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.quiz-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+.quiz-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #00bcd4;
+  border-radius: 4px;
+}
+
+/* === Dashboard Grid === */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* === Button Styles === */
+.glass-button-sm {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #f1c40f;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.glass-button-sm:hover {
+  background: rgba(0, 188, 212, 0.4);
+  color: black;
+}
+
+/* NEED TO CHANGE THE ADMIN PROFILE PART */

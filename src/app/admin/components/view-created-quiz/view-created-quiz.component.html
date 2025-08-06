@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<!-- <div class="container mt-5">
   <div *ngIf="errorMessage" class="alert alert-danger">
     {{ errorMessage }}
   </div>
@@ -32,5 +32,47 @@
     </div>
 
     <button class="btn btn-secondary" (click)="goBack()">← Back to Dashboard</button>
+  </div>
+</div> -->
+
+<!-- Glass Container -->
+<div class="glass-container">
+  <div class="glass-content-wrapper">
+
+    <!-- Error -->
+    <div *ngIf="errorMessage" class="glass-card error-message">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Quiz Data -->
+    <div *ngIf="createdQuiz" class="glass-card quiz-card">
+
+      <!-- Quiz Header -->
+      <div class="quiz-header">
+        <h2>{{ createdQuiz.title }}</h2>
+        <p><strong>Category:</strong> {{ createdQuiz.category }}</p>
+        <p><strong>Difficulty:</strong> {{ createdQuiz.difficultyLevel }}</p>
+        <p><strong>Created By:</strong> {{ createdQuiz.creatorName }}</p>
+      </div>
+
+      <!-- Questions -->
+      <div class="questions-section quiz-scroll-container">
+        <h3>Questions</h3>
+        <div *ngFor="let question of createdQuiz.questionList; let i = index" class="question-card">
+          <p><strong>Q{{ i + 1 }}:</strong> {{ question.questionTitle }}</p>
+          <div class="options">
+            <div>A. {{ question.option1 }}</div>
+            <div>B. {{ question.option2 }}</div>
+            <div>C. {{ question.option3 }}</div>
+            <div>D. {{ question.option4 }}</div>
+          </div>
+          <p class="correct-answer"><strong>Correct Answer:</strong> {{ question.rightAnswer }}</p>
+        </div>
+      </div>
+
+      <!-- Back Button -->
+      <button class="glass-button back-btn" (click)="goBack()">← Back to Dashboard</button>
+    </div>
+
   </div>
 </div>

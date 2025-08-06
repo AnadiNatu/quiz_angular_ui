@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<!-- <div class="container mt-5">
   <div class="card shadow">
     <div class="card-header bg-success text-white text-center">
       <h4>Create New Quiz</h4>
@@ -22,14 +22,6 @@
           </div>
         </div>
 
-        <!-- <div class="mb-3">
-          <label class="form-label">Total Marks</label>
-          <input type="number" class="form-control" formControlName="totalMarks" />
-          <div class="text-danger" *ngIf="quizForm.get('totalMarks')?.invalid && quizForm.get('totalMarks')?.touched">
-            Enter valid total marks
-          </div>
-        </div> -->
-
         <div class="mb-3">
           <label class="form-label">Number of Questions</label>
           <input type="number" class="form-control" formControlName="numberOfQuestion" />
@@ -44,5 +36,97 @@
       </form>
     </div>
   </div>
+</div> -->
+<!-- NoTE to add a functonality to show how many question of that category are present -->
+
+<!-- <div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-success text-white text-center">
+      <h4>Create New Quiz</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="quizForm" (ngSubmit)="createQuiz()">
+        <div class="mb-3">
+          <label class="form-label">Title</label>
+          <input type="text" class="form-control" formControlName="title" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" formControlName="description"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Number of Questions</label>
+          <input type="number" class="form-control" formControlName="numberOfQuestion" />
+        </div>
+
+
+        <button class="btn btn-primary w-100" [disabled]="quizForm.invalid">
+          Create Quiz
+        </button>
+      </form>
+    </div>
+  </div>
+</div> -->
+<!-- Needs to add a functionality that shows the no of questions availble as per the entered category and difficulty -->
+
+<div class="glass-container">
+  <div class="glass-card">
+    <h2>Create New Quiz</h2>
+    <form [formGroup]="quizForm" (ngSubmit)="createQuiz()">
+
+      <label for="quizTitle">Title</label>
+      <input
+        type="text"
+        id="quizTitle"
+        class="form-control"
+        formControlName="quizTitle"
+        placeholder="Enter quiz title"
+      />
+
+      <label for="category">Category</label>
+      <select
+        id="category"
+        class="form-select"
+        formControlName="category"
+        (change)="onCategoryChange()"
+      >
+        <option value="" disabled selected>Select category</option>
+        <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+      </select>
+      <div *ngIf="availableQuestions > 0" class="info-box">
+        📊 Available: <strong>{{ availableQuestions }}</strong>
+      </div>
+
+      <label for="difficultyLevel">Difficulty Level</label>
+      <select
+        id="difficultyLevel"
+        class="form-select"
+        formControlName="difficultyLevel"
+        (change)="onDifficultyChange()"
+      >
+        <option value="" disabled selected>Select difficulty</option>
+        <option value="EASY">Easy</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="HARD">Hard</option>
+      </select>
+
+      <label for="noOfQuestions">Number of Questions</label>
+      <div class="question-row">
+        <select
+          id="noOfQuestions"
+          class="form-select"
+          formControlName="noOfQuestions"
+        >
+          <option value="" disabled selected>Select number</option>
+          <option *ngFor="let q of questionOptions" [value]="q">{{ q }}</option>
+        </select>
+        <button type="button" class="max-btn" (click)="setMaxQuestions()">Use Max ({{ maxQuestions }})</button>
+      </div>
+
+      <button class="glass-button" type="submit">Create Quiz</button>
+    </form>
+  </div>
 </div>
-<!-- No to add a functonality to show how many question of that category are present -->
+

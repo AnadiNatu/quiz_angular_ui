@@ -1,0 +1,72 @@
+.result-wrapper{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem;
+    min-height: 100vh;
+    backdrop-filter: blur(5px);
+}
+
+.glass-card{
+    background: rgba(255, 255, 255 , 0.15);
+    border-radius: 2rem;
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    transition: transform 0.3s ease-in-out;
+    animation: fadeIn 1s ease-in;
+}
+
+.glass-card:hover{
+    transform: scale(1.02);
+}
+
+.quiz-title{
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #ffffff;
+}
+
+.quiz-details p{
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.correct {
+  color: #00ffae;
+}
+
+.incorrect {
+  color: #ff6b6b;
+}
+
+.error-message{
+    margin-top: 2rem;
+    color: #ff4c4c;
+    text-align: center;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255 , 0.15);
+    padding: 1rem;
+    border-radius: 1rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
