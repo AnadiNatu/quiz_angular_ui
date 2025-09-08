@@ -15,19 +15,27 @@ import { CommonModule } from '@angular/common';
 export class SignupComponent {
 
   signUpData : SignUpRequest = {
-    name : '',
+    name: '',
     username: '',
     password: '',
     age: 0,
-    roleNumber:0
-  }
+    roleNumber: 0
+  };
 
-  constructor(private auth : AuthService , private router : Router){}
+  constructor(private auth: AuthService, private router: Router) {}
 
-  onSubmit() : void{
+  onSubmit(): void {
+    console.log('Attempting signup with data:', this.signUpData);
+
     this.auth.signup(this.signUpData).subscribe({
-      next: () => this.router.navigate(['/login']),
-      error: err => alert('Sign Up Failed : ' + err.error)
+      next: (res) => {
+        console.log('Signup successful:', res);
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error('Signup failed:', err);
+        alert('Sign Up Failed: ' + (err?.error || 'Unknown error'));
+      }
     });
   }
 }

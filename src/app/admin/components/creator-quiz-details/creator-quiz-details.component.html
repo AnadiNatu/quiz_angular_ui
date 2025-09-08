@@ -1,4 +1,4 @@
-<p>creator-quiz-details works!</p>
+<!-- <p>creator-quiz-details works!</p>
 
 <div class="container mt-4">
   <div class="alert alert-danger">{{errorMessage}}</div>
@@ -15,4 +15,54 @@
       </li>
     </ul>
   </div>
+</div> -->
+
+<div class="glass-container">
+  <div class="glass-card">
+
+    <h2>Quiz Details</h2>
+
+    <!-- Search Section -->
+    <div class="row mb-3">
+      <div class="col-md-8 mb-2">
+        <input class="form-control" [(ngModel)]="searchText" placeholder="Search quiz by title..." />
+      </div>
+      <div class="col-md-4 mb-2">
+        <button class="glass-button" (click)="onSearch()">Search</button>
+      </div>
+      <div class="col-12 mt-2">
+        <select class="form-select" [(ngModel)]="selectedQuizTitle" (change)="onDropdownSelect(selectedQuizTitle)">
+          <option value="" disabled selected>Select from existing quizzes</option>
+          <option *ngFor="let title of allQuizTitles" [value]="title">{{ title }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger text-center mt-2">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Quiz Details -->
+    <div *ngIf="quizDetail" class="quiz-details-section">
+      <h4 class="text-warning text-center mt-4">{{ searchText || quizTitle }}</h4>
+      <p><strong>Creator:</strong> {{ quizDetail.creatorName }}</p>
+      <p><strong>Roles:</strong> {{ quizDetail.userRoles }}</p>
+
+      <div class="question-section mt-4">
+        <h5 class="text-info mb-2">Questions in this Quiz:</h5>
+        <ul class="list-group">
+          <li *ngFor="let question of quizDetail.questionTitleList" class="list-group-item bg-dark text-warning border-info">
+            {{ question }}
+          </li>
+        </ul>
+      </div>
+
+      <button class="glass-button mt-4" (click)="goToAllResults()">
+        View All Results
+      </button>
+    </div>
+  </div>
 </div>
+
+

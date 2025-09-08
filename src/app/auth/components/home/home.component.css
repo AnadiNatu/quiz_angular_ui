@@ -1,0 +1,77 @@
+.glass-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.glass-welcome-card {
+  background: rgba(0, 188, 212, 0.12);
+  padding: 3rem 2rem;
+  border-radius: 1.5rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  transition: background 0.4s ease, transform 0.3s ease;
+}
+
+.glass-welcome-card:hover {
+  background: rgba(0, 188, 212, 0.22);
+  transform: translateY(-6px);
+}
+
+.glass-welcome-card h2 {
+  font-size: 2rem;
+  color: #f1c40f;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #e0e0e0;
+  margin-bottom: 2rem;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.glass-button {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(to right, #00bcd4, #2196f3);
+  border: none;
+  border-radius: 1rem;
+  color: white;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+  text-decoration: none;
+}
+
+.glass-button:hover {
+  background: linear-gradient(to right, #2196f3, #00bcd4);
+  transform: scale(1.05);
+}
+
+.glass-button-outline {
+  padding: 0.75rem 2rem;
+  background: transparent;
+  border: 2px solid #00bcd4;
+  border-radius: 1rem;
+  color: #00bcd4;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.glass-button-outline:hover {
+  background: rgba(0, 188, 212, 0.15);
+  color: white;
+  transform: scale(1.05);
+}

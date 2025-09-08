@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.glass-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.4);
+  padding: 2rem;
+  width: 100%;
+  max-width: 700px;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  background: rgba(0, 188, 212, 0.15);
+  transform: translateY(-4px);
+}
+
+h2 {
+  color: #f1c40f;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.form-control,
+.form-select {
+  background-color: #1c1e2a;
+  border: 1px solid #00bcd4;
+  color: yellow;
+}
+
+.list-group-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.list-group-item:hover {
+  background-color: #1a1a2e;
+  transform: scale(1.02);
+}
+
+.glass-button {
+  background: linear-gradient(to right, #00bcd4, #2196f3);
+  border: none;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  font-weight: bold;
+  width: 100%;
+  transition: all 0.3s ease-in-out;
+}
+
+.glass-button:hover {
+  background: linear-gradient(to right, #2196f3, #00bcd4);
+  transform: translateY(-2px);
+}

@@ -1,13 +1,16 @@
-<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100 text-center">
-  <div class="card shadow-lg p-5 w-100" style="max-width: 500px;">
-    <h2 class="mb-4">Welcome to the Quiz Application</h2>
-    <p class="text-muted mb-4">Please login or sign up to continue</p>
-    <div class="d-flex justify-content-around">
-      <a routerLink="/login" class="btn btn-primary px-4">Login</a>
-      <a routerLink="/signup" class="btn btn-outline-primary px-4">Sign Up</a>
+<div class="glass-container text-center">
+  <div class="glass-welcome-card">
+    <h2>Welcome to the Quiz Application</h2>
+    <p class="subtitle">Please login or sign up to continue</p>
+    <div class="button-group">
+      <a routerLink="/login" class="glass-button">Login</a>
+      <a routerLink="/signup" class="glass-button-outline">Sign Up</a>
     </div>
   </div>
 </div>
+
+<router-outlet></router-outlet>
+
 
 <!-- 
 

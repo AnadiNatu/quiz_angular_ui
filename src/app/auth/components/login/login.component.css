@@ -1,0 +1,89 @@
+.glass-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  min-height: 100vh;
+}
+
+.glass-login-card {
+  background: rgba(0, 188, 212, 0.1); /* bluish tint */
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.4);
+  color: #f1f1f1;
+  transition: background 0.5s ease, transform 0.3s ease, color 0.3s ease;
+}
+
+.glass-login-card:hover {
+  background: rgba(15, 76, 117, 0.3); /* darker bluish tint */
+  transform: translateY(-6px);
+  color: #f9f9f9;
+}
+
+h2 {
+  text-align: center;
+  color: #f1c40f;
+  margin-bottom: 1rem;
+}
+
+label {
+  margin-top: 1rem;
+  display: block;
+  font-weight: bold;
+  color: #00bcd4;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  background: #1e1e2f;
+  border: 1px solid #00bcd4;
+  color: yellow;
+  border-radius: 0.5rem;
+  transition: border 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #2196f3;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+}
+
+.glass-button {
+  margin-top: 1.5rem;
+  background: linear-gradient(to right, #00bcd4, #2196f3);
+  border: none;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  width: 100%;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.glass-button:hover {
+  background: linear-gradient(to right, #2196f3, #00bcd4);
+}
+
+.glass-button-sm {
+  margin-top: 0.5rem;
+  background-color: transparent;
+  border: none;
+  color: #00bcd4;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.glass-button-sm:hover {
+  color: #f1c40f;
+  text-decoration: underline;
+}

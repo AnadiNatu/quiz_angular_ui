@@ -1,36 +1,68 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { CreatorUserDTO } from '../../models/admin-dtos';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AdminServiceService } from '../../services/admin-service.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-creator-quiz-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule , FormsModule],
   templateUrl: './creator-quiz-details.component.html',
   styleUrl: './creator-quiz-details.component.css'
 })
 export class CreatorQuizDetailsComponent implements OnInit{
 
-  quizTitle : string = ' ';
+  quizTitle : string = '';
   quizDetail : CreatorUserDTO | null = null;
-  errorMessage = '';
+  errorMessage : string = '';
+  allQuizTitles : string[] = [];
+  selectedQuizTitle : string = '';
+  searchText : string = '';
 
-  constructor(private route : ActivatedRoute , private adminService : AdminServiceService){}
+  constructor(private route : ActivatedRoute , private adminService : AdminServiceService , private router : Router){}
   
    ngOnInit(): void {
-    this.quizTitle = this.route.snapshot.paramMap.get('quizTitle') || '';
+    this.adminService.getAllQuizTitles().subscribe({
+      next : (titles) => this.allQuizTitles = titles,
+      error : () => this.errorMessage = 'Could not fetch quiz titles.'
+    });
 
-    if (this.quizTitle) {
-      this.adminService.getAllQuestionsOfQuiz(this.quizTitle).subscribe({
-        next: (res) => this.quizDetail = res,
-        error: (err) => {
-          this.errorMessage = err?.error?.message || 'Failed to load quiz details';
-        }
-      });
-    } else {
-      this.errorMessage = 'Quiz title is missing in the URL.';
+    this.quizTitle = this.route.snapshot.paramMap.get('quizTitle') || '';
+    if(this.quizTitle){
+      this.fetchQuizDetails(this.quizTitle);
     }
   }
+
+  fetchQuizDetails(title : string){
+    this.adminService.getAllQuestionsOfQuiz(title).subscribe({
+      next : (res) => {
+        this.quizDetail = res;
+        this.errorMessage = '';
+      },
+      error : (err) => {
+        this.errorMessage = err?.error?.errorMessage || 'Failed to loaded quiz details';
+        this.quizDetail = null;
+      }
+    });
+  }
+
+  onSearch() {
+    const trimmed = this.searchText.trim();
+    if(trimmed){
+      this.fetchQuizDetails(trimmed);
+    }
+  }
+
+  onDropdownSelect(title : string){
+    this.searchText = title;
+    this.fetchQuizDetails(title);
+  }
+
+  goToAllResults(){
+    this.router.navigate(['/admin/results/all' , this.quizTitle]);  
+  }
 }
+// need to show the empty , when no input 
+// need to combine the search and the dropdown 

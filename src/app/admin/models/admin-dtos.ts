@@ -27,7 +27,7 @@ export interface CreateQuizDTO{
     quizTitle : string;
     category : string;
     difficultyLevel : string;
-    noOfQuestion : number;
+    noOfQuestions : number;
 }
 
 export interface CreatorUserDTO{
@@ -68,7 +68,7 @@ export interface QuizDTO{
     category : string;
     difficultyLevel : string;
     creatorUserId : number;
-    creatorUserName : number;
+    creatorUserName : string;
     questionQuizIds : number[];
     participantUserName : string[];
 }

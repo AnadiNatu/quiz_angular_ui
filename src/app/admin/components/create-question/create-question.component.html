@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<!-- <div class="container mt-5">
   <div class="card shadow">
     <div class="card-header bg-primary text-white">
       <h4 class="mb-0 text-center">Create New Question</h4>
@@ -65,4 +65,213 @@
       </form>
     </div>
   </div>
+</div> -->
+
+<!-- <div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white text-center">
+      <h4 class="mb-0">Create New Question</h4>
+    </div>
+
+    <div class="card-body glass-container">
+      <div class="glass-card">
+        <form [formGroup]="questionForm" (ngSubmit)="submitQuestion()">
+          <div class="mb-3">
+            <label class="form-label">Question Title</label>
+            <input type="text" class="form-control" formControlName="questionTitle" placeholder="Enter question" />
+          </div>
+
+          <div>
+            <label class="form-label">
+              <select class="form-select" formControlName="category">
+                <option value="">Select Category</option>
+                <option value="">Math</option>
+                <option value="">Science</option>
+                <option value="">History</option>
+                <option value="">Programming</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Difficulty Level</label>
+            <select class="form-select" formControlName="difficultyLevel">
+              <option value="">Select difficulty</option>
+              <option value="EASY">EASY</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="HARD">HARD</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3"
+              *ngFor="let opt of ['option1' , 'option2' , 'option3' , 'option4'] ; let i = index">
+              <label class="form-label">Option {{i+1}}</label>
+              <input type="text" class="form-control" [formControlName]="opt" />
+              <button type="button" class="btn btn-outline-success btn-sm mt-2 w-100"
+                [ngClass]="{'active' : selectedAnswer === opt}" (click)="selectRightAnswer(opt)">
+                Set as correct
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Select the Correct Answer</label>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="button" class="btn-option"
+                [class.active]="questionForm.get('rightAnswer')?.value === questionForm.get('option1')?.value"
+                (click)="setCorrectAnswer('option1')">Option 1</button>
+              <button type="button" class="btn-option"
+                [class.active]="questionForm.get('rightAnswer')?.value === questionForm.get('option2')?.value"
+                (click)="setCorrectAnswer('option2')">Option 2</button>
+              <button type="button" class="btn-option"
+                [class.active]="questionForm.get('rightAnswer')?.value === questionForm.get('option3')?.value"
+                (click)="setCorrectAnswer('option3')">Option 3</button>
+              <button type="button" class="btn-option"
+                [class.active]="questionForm.get('rightAnswer')?.value === questionForm.get('option4')?.value"
+                (click)="setCorrectAnswer('option4')">Option 4</button>
+            </div>
+          </div>
+
+          <button class="btn btn-success w-100" [disabled]="questionForm.invalid">
+            Submit Question
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> -->
+<div class="glass-container">
+  <div class="glass-card">
+    <div *ngIf="!submittedQuestion" class="glass-card">
+      <h2 class="glass-heading">Create New Question</h2>
+
+      <form [formGroup]="questionForm" (ngSubmit)="submitQuestion()">
+        <div class="mb-3">
+          <label>Question Title</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="questionTitle"
+            placeholder="Enter question"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label>Category</label>
+          <select
+            #categorySelect
+            formControlName="category"
+            class="form-select"
+            (change)="onCategoryChange(categorySelect.value)"
+          >
+            <option value="">Select Category</option>
+            <option *ngFor="let cat of categories" [value]="cat">
+              {{ cat }}
+            </option>
+            <option value="ADD_NEW">➕ Add New Category</option>
+          </select>
+        </div>
+
+        <div class="mb-3" *ngIf="addNewCategory">
+          <label>New Category</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="newCategory"
+            placeholder="Enter new category"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label>Difficulty Level</label>
+          <select class="form-select" formControlName="difficultyLevel">
+            <option value="">Select Difficulty</option>
+            <option value="EASY">EASY</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="HARD">HARD</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div
+            class="col-md-6 mb-3"
+            *ngFor="
+              let opt of ['option1', 'option2', 'option3', 'option4'];
+              let i = index
+            "
+          >
+            <label>Option {{ i + 1 }}</label>
+            <input
+              type="text"
+              class="form-control"
+              [formControlName]="opt"
+              placeholder="Enter option {{ i + 1 }}"
+            />
+
+            <button
+              type="button"
+              class="glass-button-sm"
+              [class.active-btn]="selectedAnswer === opt"
+              (click)="selectRightAnswer(opt)"
+            >
+              {{ selectedAnswer === opt ? "✔ Selected" : "Set as Answer" }}
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label>Correct Answer</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="rightAnswer"
+            readonly
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="glass-button w-100"
+          [disabled]="questionForm.invalid"
+        >
+          Submit Question
+        </button>
+      </form>
+    </div>
+    <!-- Submitted Card View -->
+    <div *ngIf="submittedQuestion" class="glass-card">
+      <h2 class="glass-heading">🎉 Question Submitted</h2>
+
+      <p><strong>ID:</strong> {{ submittedQuestion.id }}</p>
+      <p><strong>Title:</strong> {{ submittedQuestion.questionTitle }}</p>
+      <p><strong>Category:</strong> {{ submittedQuestion.category }}</p>
+      <p>
+        <strong>Difficulty:</strong> {{ submittedQuestion.difficultyLevel }}
+      </p>
+      <p><strong>Options:</strong></p>
+      <ul>
+        <li>A. {{ submittedQuestion.option1 }}</li>
+        <li>B. {{ submittedQuestion.option2 }}</li>
+        <li>C. {{ submittedQuestion.option3 }}</li>
+        <li>D. {{ submittedQuestion.option4 }}</li>
+      </ul>
+      <p>
+        <strong>Correct Answer:</strong> {{ submittedQuestion.rightAnswer }}
+      </p>
+
+      <div class="d-flex justify-content-between mt-4">
+        <button class="glass-button mx-3" (click)="submittedQuestion = null">
+          ➕ Add Another Question
+        </button>
+        <button
+          class="glass-button"
+          (click)="router.navigate(['/admin'])"
+        >
+          🏠 Go to Dashboard
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
+<!-- option 4 is not visible in the question details card -->

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" [routerLink]="['/']">Admin Panel</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -39,13 +39,13 @@
 
 <div class="container mt-4">
   <div class="row">
-    <!-- Created Quizzes -->
+    Created Quizzes
     <div class="col-md-6">
       <h4 class="text-primary">Your Created Quizzes</h4>
       <app-creator-quiz-list (viewQuiz)="viewCreatedQuiz($event)"></app-creator-quiz-list>
     </div>
 
-    <!-- Taken Quizzes -->
+    Taken Quizzes
     <div class="col-md-6">
       <h4 class="text-success">Quizzes You've Taken</h4>
       <ul class="list-group">
@@ -60,5 +60,81 @@
       </ul>
     </div>
   </div>
+</div> -->
+<!-- NAVBAR -->
+<!-- Responsive Glass Navbar -->
+<nav class="glass-navbar">
+  <div class="nav-left">
+    <a class="brand" (click)="toggleAdminCard()">Admin Panel</a>
+  </div>
+
+  <div class="nav-toggle" (click)="toggleMenu = !toggleMenu">
+    &#9776;
+  </div>
+
+  <div class="nav-right" [class.open]="toggleMenu">
+    <a routerLink="/admin" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+    <a routerLink="/admin/create-quiz" routerLinkActive="active-link">Create Quiz</a>
+    <a routerLink="/admin/create-question" routerLinkActive="active-link">Create Question</a>
+    <a routerLink="/admin/all/quizzes" routerLinkActive="active-link">All Quizzes</a>
+    <a routerLink="/admin/creator/quizzes" routerLinkActive="active-link">My Quizzes</a>
+    <a routerLink="/admin/participant/quiz" routerLinkActive="active-link">Take Quiz</a>
+    <a href="#" (click)="logout()">Log Out</a>
+  </div>
+</nav>
+
+<!-- Admin Info Card -->
+<div *ngIf="showAdminCard" class="glass-card admin-info-card">
+  <h2>Admin Info</h2>
+  <ng-container *ngIf="userDetails">
+    <p><strong>Username:</strong> {{ userDetails.username }}</p>
+    <p><strong>Name:</strong> {{ userDetails.name }}</p>
+    <p><strong>Age:</strong> {{ userDetails.age }}</p>
+    <p><strong>Role:</strong> {{ userDetails.userRoles || 'N/A' }}</p>
+  </ng-container>
+  <button class="glass-button-sm" (click)="toggleAdminCard()">Close</button>
 </div>
+
+<!-- Greeting -->
+<div class="dashboard-header text-center">
+  <h1>Welcome, {{ username }} 👋</h1>
+  <p>Manage your quizzes, view results, and create questions from here.</p>
+</div>
+
+<!-- Dashboard Grid -->
+<div class="dashboard-grid">
+  <!-- Profile Card -->
+  <div class="glass-card profile-card text-center">
+    <img [src]="profileImageUrl" alt="Profile" class="profile-avatar" />
+    <h3>{{ username }}</h3>
+    <label class="upload-btn">
+      Change Photo
+      <input type="file" (change)="uploadProfilePhoto($event)" hidden />
+    </label>
+  </div>
+
+  <!-- Created Quizzes with scrollable container -->
+  <div class="glass-card">
+    <h3>Your Created Quizzes</h3>
+    <div class="quiz-scroll-container">
+      <app-creator-quiz-list (viewQuiz)="viewCreatedQuiz($event)"></app-creator-quiz-list>
+    </div>
+  </div>
+
+  <!-- Taken Quizzes -->
+  <div class="glass-card">
+    <h3>Quizzes You've Taken</h3>
+    <ul class="taken-quiz-list">
+      <li *ngFor="let title of takenQuizzes" class="d-flex justify-content-between align-items-center mb-2">
+        <span>{{ title }}</span>
+        <button class="glass-button-sm" (click)="viewParticipantResult(title)">View Result</button>
+      </li>
+
+    </ul>
+  </div>
+</div>
+<!-- NEED TO ADD THE FUNCTIONALITY OF QUIZ TAKEN BY PARTICIPANT  -->
+
+
 <router-outlet></router-outlet>
+

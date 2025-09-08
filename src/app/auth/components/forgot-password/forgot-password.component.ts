@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { ForgotPasswordRequest } from '../../models/dtos';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
@@ -13,25 +14,33 @@ import { ForgotPasswordRequest } from '../../models/dtos';
 })
 export class ForgotPasswordComponent {
 
-  email : string = '';
-  message : string = '';
-  error : string = '';
+   // Form input and messages
+  userEmail: string = '';
+  successMessage: string = '';
+  errorMessage: string = '';
 
-  constructor(private auth : AuthService){}
+  constructor(private authService: AuthService , private router : Router) {}
 
-  onSubmit(){
-    const request : ForgotPasswordRequest = { email : this.email};
+  onSendResetLink(): void {
+    const payload: ForgotPasswordRequest = { email: this.userEmail };
 
-    this.auth.forgotPassword(request).subscribe({
-      next: (token) =>{
-        this.message = 'Reset token to your email (or token : ' +token+ ')';
-        this.error = '';
+    console.log('🔍 Sending forgot password request:', payload);
+    debugger;
+
+    this.authService.forgotPassword(payload).subscribe({
+      next: (token) => {
+        console.log('✅ Token received:', token);
+        this.successMessage = `Reset token sent to your email (or token: ${token})`;
+        this.errorMessage = '';
+        this.router.navigate(['/reset-password'] , {
+          queryParams : {token : token , email : this.userEmail}
+        })
       },
       error: (err) => {
-        this.error = err.error || 'Failed to send reset token';
-        this.message = '';
-      } 
+        console.error('❌ Error during forgot password:', err);
+        this.errorMessage = err.error || 'Failed to send reset token.';
+        this.successMessage = '';
+      }
     });
   }
-
 }
