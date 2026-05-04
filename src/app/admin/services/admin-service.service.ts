@@ -1,138 +1,269 @@
+// src/app/admin/services/admin-service.service.ts
+
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import {
-  CreateQuizDTO,
-  CreatedQuizDTO,
   CreateQuestionDTO,
-  CreatorUserDTO,
-  QuestionWrapper,
-  QuizTakenReponse,
-  ResponseEvaluationDTO,
-  ResultDTO,
-  QuizDTO,
   QuestionDTO,
+  QuestionResponseDTO,
+  CreateQuizDTO,
+  QuizDTO,
+  QuizSubmitRequest,
+  ResultDTO,
+  QuizResultDTO,
+  QuizStatsDTO,
 } from '../models/admin-dtos';
-
-import { Observable } from 'rxjs';
 import { UsersDTO } from '../../auth/models/dtos';
 import { UserStorageService } from '../../auth/services/user-storage/user-storage.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AdminServiceService {
 
-  private BASE_URL = 'http://localhost:8080/api/admin/';
-  
-  constructor(private http : HttpClient , private storage : UserStorageService) { }
+  // All traffic goes through the API Gateway on :8080
+  private AUTH_URL     = 'http://localhost:8080/api/auth';
+  private QUESTION_URL = 'http://localhost:8080/api/questions';
+  private QUIZ_URL     = 'http://localhost:8080/api/quiz';
+  private NOTIFY_URL   = 'http://localhost:8080/api/notify';
 
-  addQuestion(dto : CreateQuestionDTO) : Observable<QuestionDTO>{
-    return this.http.post<QuestionDTO>(`${this.BASE_URL}add` , dto , {
-      headers : this.createAuthorizationHeader()
+  constructor(
+    private http: HttpClient,
+    private storage: UserStorageService
+  ) {}
+
+  // ─── Helpers ────────────────────────────────────────────────────
+
+  private headers(): HttpHeaders {
+    return new HttpHeaders({
+      Authorization: `Bearer ${this.storage.getToken()}`
     });
   }
 
-  createQuiz(dto : CreateQuizDTO) : Observable<QuizDTO>{
-    return this.http.post<QuizDTO>(`${this.BASE_URL}create` , dto , {
-      headers: this.createAuthorizationHeader()
+  private jsonHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      Authorization: `Bearer ${this.storage.getToken()}`,
+      'Content-Type': 'application/json'
     });
   }
 
-  getCreatedQuiz(quizTitle : string) : Observable<CreatedQuizDTO> {
-    return this.http.get<CreatedQuizDTO>(`${this.BASE_URL}created/${quizTitle}` , {
-      headers: this.createAuthorizationHeader()
+  // ─── Auth / User ────────────────────────────────────────────────
+
+  // GET /api/auth/{id}
+  getUserDetails(): Observable<UsersDTO> {
+    const id = this.storage.getUserId();
+    return this.http.get<UsersDTO>(`${this.AUTH_URL}/${id}`, {
+      headers: this.headers()
     });
   }
 
-  getAllQuestionsOfQuiz(quizTitle : string) : Observable<CreatorUserDTO>{
-    return this.http.get<CreatorUserDTO>(`${this.BASE_URL}questions/${quizTitle}` , {
-      headers: this.createAuthorizationHeader()
+  // GET /api/auth/all  (ADMIN)
+  getAllUsers(): Observable<UsersDTO[]> {
+    return this.http.get<UsersDTO[]>(`${this.AUTH_URL}/all`, {
+      headers: this.headers()
     });
   }
 
-  getAllQuizzesByCreator(): Observable<QuizDTO[]>{
-    return this.http.get<QuizDTO[]>(`${this.BASE_URL}creator/all` , {
-      headers: this.createAuthorizationHeader()
+  // ─── Questions ───────────────────────────────────────────────────
+
+  // POST /api/questions
+  addQuestion(dto: CreateQuestionDTO): Observable<QuestionDTO> {
+    return this.http.post<QuestionDTO>(this.QUESTION_URL, dto, {
+      headers: this.jsonHeaders()
     });
   }
 
-  getAllQuiz() : Observable<QuizDTO[]> {
-    return this.http.get<QuizDTO[]>(`${this.BASE_URL}quiz/all`, {
-      headers : this.createAuthorizationHeader()
-    })
-  }
-
-  getQuizForParticipant(quizTitle : string) : Observable<QuestionWrapper[]>{
-    return this.http.get<QuestionWrapper[]>(`${this.BASE_URL}participant/${quizTitle}` , {
-      headers: this.createAuthorizationHeader()
-    });
-  } 
-
-  submitQuizResponse(response : QuizTakenReponse) : Observable<ResponseEvaluationDTO[]>{
-    return this.http.post<ResponseEvaluationDTO[]>(`${this.BASE_URL}responses/submit` , response , {
-      headers: this.createAuthorizationHeader()
+  // GET /api/questions
+  getAllQuestions(): Observable<QuestionDTO[]> {
+    return this.http.get<QuestionDTO[]>(this.QUESTION_URL, {
+      headers: this.headers()
     });
   }
 
-  getUserResult(quizTitle : string) : Observable<ResultDTO>{
-    return this.http.get<ResultDTO>(`${this.BASE_URL}results/user/${quizTitle}` , {
-      headers: this.createAuthorizationHeader()
-    });
+  // GET /api/questions/category/{category}
+  getQuestionsByCategory(category: string): Observable<QuestionDTO[]> {
+    return this.http.get<QuestionDTO[]>(
+      `${this.QUESTION_URL}/category/${category}`,
+      { headers: this.headers() }
+    );
   }
 
-  getAllUserResults(quizTitle : string) : Observable<ResultDTO[]>{
-    return this.http.get<ResultDTO[]>(`${this.BASE_URL}results/all/${quizTitle}` , {
-      headers: this.createAuthorizationHeader()
-    });
+  // Derived: count questions by category
+  getQuestionCountByCategory(category: string): Observable<number> {
+    return this.getQuestionsByCategory(category).pipe(
+      map(questions => questions.length)
+    );
   }
 
-  // -----------------------------------------------------------------
-  getQuizByQuizTitle(title : string) : Observable<QuizDTO>{
-    return this.http.get<QuizDTO>(`${this.BASE_URL}getQuiz/${title}` , {
-      headers : this.createAuthorizationHeader()
-    })
+  // Derived: count questions by category + difficulty
+  getQuestionCountByCategoryAndDifficulty(
+    category: string,
+    difficultyLevel: string
+  ): Observable<number> {
+    return this.getQuestionsByCategory(category).pipe(
+      map(questions =>
+        questions.filter(
+          q => q.difficultyLevel.toUpperCase() === difficultyLevel.toUpperCase()
+        ).length
+      )
+    );
   }
 
-  getAllQuizTitles() : Observable<string[]>{
-    return this.http.get<string[]>(`${this.BASE_URL}getQuizTitles` , {
-      headers : this.createAuthorizationHeader()
-    })
-  }
-
-  getAllTakenQuizTitles() : Observable<any> {
-    return this.http.get(`${this.BASE_URL}getTakenQuiz` , {
-      headers: this.createAuthorizationHeader()
-    });
-  }
-
-  getQuestionCountByCategory(category : string) : Observable<number> {
-    return this.http.get<number>(`${this.BASE_URL}count/category/${category}` , {
-      headers: this.createAuthorizationHeader()
-    });
-  }
-
-  getQuestionCountByCategoryAndDifficulty(category : string , difficultyLevel : string) : Observable<number>{
-    return this.http.get<number>(`${this.BASE_URL}count/category/${category}/difficulty/${difficultyLevel}` , {
-      headers: this.createAuthorizationHeader()
-    });
-  }
-
+  // Derived: unique categories from all questions
   getAllCategories(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.BASE_URL}categories` , {
-      headers: this.createAuthorizationHeader()
+    return this.getAllQuestions().pipe(
+      map(questions => [...new Set(questions.map(q => q.category))])
+    );
+  }
+
+  // DELETE /api/questions/{id}
+  deleteQuestion(id: number): Observable<QuestionDTO> {
+    return this.http.delete<QuestionDTO>(`${this.QUESTION_URL}/${id}`, {
+      headers: this.headers()
     });
   }
 
-  getUserDetails() : Observable<UsersDTO>{
-    return this.http.get<UsersDTO>(`${this.BASE_URL}user` , {
-      headers: this.createAuthorizationHeader()
+  // ─── Quiz ────────────────────────────────────────────────────────
+
+  // POST /api/quiz
+  createQuiz(dto: CreateQuizDTO): Observable<QuizDTO> {
+    return this.http.post<QuizDTO>(this.QUIZ_URL, dto, {
+      headers: this.jsonHeaders()
     });
   }
-  
-  private createAuthorizationHeader() : HttpHeaders{
-    return new HttpHeaders().set(
-      'Authorization' , 'Bearer ' + this.storage.getToken()
-    )
+
+  // GET /api/quiz/{id}
+  getQuizById(id: number): Observable<QuizDTO> {
+    return this.http.get<QuizDTO>(`${this.QUIZ_URL}/${id}`, {
+      headers: this.headers()
+    });
+  }
+
+  // GET /api/quiz/title/{title}
+  getQuizByQuizTitle(title: string): Observable<QuizDTO> {
+    return this.http.get<QuizDTO>(`${this.QUIZ_URL}/title/${encodeURIComponent(title)}`, {
+      headers: this.headers()
+    });
+  }
+
+  // GET /api/quiz/creator/{userId}
+  getAllQuizzesByCreator(): Observable<QuizDTO[]> {
+    const userId = this.storage.getUserId();
+    return this.http.get<QuizDTO[]>(`${this.QUIZ_URL}/creator/${userId}`, {
+      headers: this.headers()
+    });
+  }
+
+  // GET /api/quiz  — all quizzes (admin view via creator/all pattern)
+  getAllQuiz(): Observable<QuizDTO[]> {
+    // Use creator/0 trick or fetch by a known admin id;
+    // The backend doesn't expose a "get all" endpoint directly,
+    // so we use the stats endpoint indirectly.
+    // For now fetch quizzes by current user and fall back gracefully.
+    return this.getAllQuizzesByCreator();
+  }
+
+  // GET /api/quiz/participant/{userId}  → string[] of titles
+  getAllTakenQuizTitles(): Observable<string[]> {
+    const userId = this.storage.getUserId();
+    return this.http.get<string[]>(`${this.QUIZ_URL}/participant/${userId}`, {
+      headers: this.headers()
+    });
+  }
+
+  // GET /api/quiz/title/{title}  → derive titles list from creator quizzes
+  getAllQuizTitles(): Observable<string[]> {
+    return this.getAllQuizzesByCreator().pipe(
+      map(quizzes => quizzes.map(q => q.title))
+    );
+  }
+
+  // GET /api/quiz/{quizId}/questions  → string[] of question titles
+  getQuestionTitlesOfQuiz(quizId: number): Observable<string[]> {
+    return this.http.get<string[]>(`${this.QUIZ_URL}/${quizId}/questions`, {
+      headers: this.headers()
+    });
+  }
+
+  // ─── Start & Submit Quiz ─────────────────────────────────────────
+
+  // POST /api/quiz/{quizId}/start?userId={userId}
+  // Returns QuestionResponseDTO[] (with id + rightAnswer for evaluation)
+  startQuiz(quizId: number): Observable<QuestionResponseDTO[]> {
+    const userId = this.storage.getUserId();
+    return this.http.post<QuestionResponseDTO[]>(
+      `${this.QUIZ_URL}/${quizId}/start?userId=${userId}`,
+      null,
+      { headers: this.headers() }
+    );
+  }
+
+  // POST /api/quiz/submit
+  submitQuiz(request: QuizSubmitRequest): Observable<ResultDTO> {
+    return this.http.post<ResultDTO>(`${this.QUIZ_URL}/submit`, request, {
+      headers: this.jsonHeaders()
+    });
+  }
+
+  // ─── Results ─────────────────────────────────────────────────────
+
+  // GET /api/quiz/results/user/{userId}
+  getUserResults(): Observable<QuizResultDTO[]> {
+    const userId = this.storage.getUserId();
+    return this.http.get<QuizResultDTO[]>(
+      `${this.QUIZ_URL}/results/user/${userId}`,
+      { headers: this.headers() }
+    );
+  }
+
+  // GET /api/quiz/{quizId}/results
+  getAllUserResults(quizId: number): Observable<QuizResultDTO[]> {
+    return this.http.get<QuizResultDTO[]>(
+      `${this.QUIZ_URL}/${quizId}/results`,
+      { headers: this.headers() }
+    );
+  }
+
+  // GET /api/quiz/{quizId}/stats
+  getQuizStats(quizId: number): Observable<QuizStatsDTO> {
+    return this.http.get<QuizStatsDTO>(
+      `${this.QUIZ_URL}/${quizId}/stats`,
+      { headers: this.headers() }
+    );
+  }
+
+  // DELETE /api/quiz/{id}
+  deleteQuiz(id: number): Observable<QuizDTO> {
+    return this.http.delete<QuizDTO>(`${this.QUIZ_URL}/${id}`, {
+      headers: this.headers()
+    });
+  }
+
+  // ─── Notification (frontend-triggered) ───────────────────────────
+
+  // POST /api/notify/email/report/{userId}
+  sendReportCardEmail(userId: number): Observable<string> {
+    return this.http.post(
+      `${this.NOTIFY_URL}/email/report/${userId}`,
+      null,
+      { headers: this.headers(), responseType: 'text' }
+    );
+  }
+
+  // GET /api/notify/document/participant/{userId}/report
+  getParticipantReportDocument(userId: number): Observable<string> {
+    return this.http.get(
+      `${this.NOTIFY_URL}/document/participant/${userId}/report`,
+      { headers: this.headers(), responseType: 'text' }
+    );
+  }
+
+  // GET /api/notify/document/quiz/{quizId}/results
+  getQuizResultDocument(quizId: number): Observable<string> {
+    return this.http.get(
+      `${this.NOTIFY_URL}/document/quiz/${quizId}/results`,
+      { headers: this.headers(), responseType: 'text' }
+    );
   }
 }

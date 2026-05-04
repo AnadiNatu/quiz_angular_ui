@@ -8,33 +8,36 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule , FormsModule , RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
 export class SignupComponent {
 
-  signUpData : SignUpRequest = {
-    name: '',
+  signUpData: SignUpRequest = {
     username: '',
     password: '',
-    age: 0,
-    roleNumber: 0
+    email: '',
+    role: 'PARTICIPANT'
   };
+
+  errorMessage = '';
+  successMessage = '';
 
   constructor(private auth: AuthService, private router: Router) {}
 
-  onSubmit(): void {
-    console.log('Attempting signup with data:', this.signUpData);
+  selectRole(role: string): void {
+    this.signUpData.role = role;
+  }
 
+  onSubmit(): void {
     this.auth.signup(this.signUpData).subscribe({
-      next: (res) => {
-        console.log('Signup successful:', res);
-        this.router.navigate(['/login']);
+      next: () => {
+        this.successMessage = 'Account created! Redirecting to login...';
+        setTimeout(() => this.router.navigate(['/login']), 1500);
       },
-      error: (err) => {
-        console.error('Signup failed:', err);
-        alert('Sign Up Failed: ' + (err?.error || 'Unknown error'));
+      error: err => {
+        this.errorMessage = 'Sign up failed: ' + (err?.error?.message || 'Server error.');
       }
     });
   }

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ResultDTO } from '../../models/admin-dtos';
-import { ActivatedRoute } from '@angular/router';
+import { QuizResultDTO } from '../../models/admin-dtos';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AdminServiceService } from '../../services/admin-service.service';
+import { UserStorageService } from '../../../auth/services/user-storage/user-storage.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,38 +12,44 @@ import { CommonModule } from '@angular/common';
   templateUrl: './quiz-result.component.html',
   styleUrl: './quiz-result.component.css'
 })
-export class QuizResultComponent implements OnInit{
+export class QuizResultComponent implements OnInit {
 
-  quizTitle : string = '';
-  result !: ResultDTO;
+  results: QuizResultDTO[] = [];
   isLoaded = false;
   hasError = false;
-  
+
   constructor(
-    private route : ActivatedRoute,
-    private adminService : AdminServiceService
-  ){}
+    private adminService: AdminServiceService,
+    private storage: UserStorageService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.quizTitle = this.route.snapshot.paramMap.get('quizTitle') || '';
+    this.adminService.getUserResults().subscribe({
+      next: res => {
+        this.results  = res;
+        this.isLoaded = true;
+      },
+      error: () => {
+        this.hasError = true;
+        this.isLoaded = true;
+      }
+    });
+  }
 
-    if(this.quizTitle){
-      this.adminService.getUserResult(this.quizTitle).subscribe({
-        next : (res) => {
-          this.result = res;
-          this.isLoaded = true;
-        },
-        error : (err) => {
-          console.error('Error fetching result' , err);
-          this.hasError = true;
-        }
-      });
-    }
+  viewReportCard(): void {
+    const userId = this.storage.getUserId() ?? 0;
+    this.adminService.getParticipantReportDocument(userId).subscribe({
+      next: html => {
+        const w = window.open('', '_blank');
+        w?.document.write(html);
+        w?.document.close();
+      },
+      error: () => alert('Failed to open report card.')
+    });
+  }
+
+  goBack(): void {
+    this.router.navigate(['/admin']);
   }
 }
-
-// HEY CHAT CAN YOU USE THIS COMPONENT "QUIZ-RESULT" IN THE "QUIZ-PARTICIPANT" COMPONENT TO SHOW THE RESULT OF THE USER WHO HAS TAKEN THE QUIZ 
-// ---> PARTICIPANT-QUIZ TS FILE
-// ---> PARTICIPANT-QUIZ HTML FILE
-// ---> QUIZ-RESULT TS FILE
-// ---> QUIZ-RESULT HTML FILE

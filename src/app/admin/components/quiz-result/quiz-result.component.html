@@ -1,41 +1,54 @@
-<!-- <div class="container mt-5">
+<div class="result-wrapper">
 
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div *ngIf="isLoaded && result" class="card shadow">
-        <div class="card-header bg-primary text-white">
-          <h4 class="mb-0">Result for "{{ result.quizTitle }}"</h4>
-        </div>
-        <div class="card-body">
-          <p class="mb-2"><strong>User:</strong> {{ result.userName }}</p>
-          <p class="mb-2"><strong>Total Questions:</strong> {{ result.totalQuestion }}</p>
-          <p class="mb-2 text-success"><strong>Correct:</strong> {{ result.correctAnswer }}</p>
-          <p class="mb-2 text-danger"><strong>Incorrect:</strong> {{ result.incorrectAnswer }}</p>
-          <p class="mb-0"><strong>Score:</strong> {{ result.percentage }}%</p>
-        </div>
-      </div>
-
-      <div *ngIf="hasError" class="alert alert-danger mt-4">
-        Error loading result. Please try again later.
-      </div>
-    </div>
+  <div *ngIf="hasError" class="error-message">
+    ⚠️ Error loading results. Please try again later.
   </div>
 
-</div> -->
+  <ng-container *ngIf="isLoaded && !hasError">
 
-<div class="result-wrapper" *ngIf="isLoaded && result">
-  <div class="glass-card animate-fade-in">
-    <h2 class="quiz-title">Result for "{{result.quizTitle}}"</h2>
-    <div class="quiz-details">
-      <p><strong>User : </strong> {{result.userName}}</p>
-      <p> <strong>Total Questions : </strong> {{result.totalQuestion}}</p>
-      <p class="correct"><strong>Correct :</strong>{{result.totalQuestion}}</p>
-      <p class="incorrect"><strong>Incorrect :</strong>{{result.incorrectAnswer}}</p>
-      <p><strong>Score :</strong>{{result.percentage}}</p>
+    <div *ngIf="results.length === 0" class="glass-card text-center">
+      <p>You haven't taken any quizzes yet.</p>
     </div>
-  </div>
-</div>
 
-<div *ngIf="hasError" class="error-message animate-fade-in">
-⚠️ Error loading result. Please try again later.
+    <div *ngFor="let result of results" class="glass-card animate-fade-in mb-4">
+      <h2 class="quiz-title">{{ result.quizTitle }}</h2>
+      <div class="quiz-details">
+        <p><strong>Category:</strong> {{ result.category }}</p>
+        <p><strong>Difficulty:</strong> {{ result.difficultyLevel }}</p>
+        <p><strong>Curator:</strong> {{ result.curatorUsername }}</p>
+        <p><strong>Total Questions:</strong> {{ result.totalQuestions }}</p>
+        <p class="correct">
+          <strong>Correct:</strong> {{ result.correctAnswers }}
+        </p>
+        <p class="incorrect">
+          <strong>Incorrect:</strong> {{ result.incorrectAnswers }}
+        </p>
+        <p>
+          <strong>Score:</strong>
+          {{ result.percentage | number:'1.1-1' }}%
+        </p>
+        <p>
+          <strong>Status:</strong>
+          <span [class.correct]="result.percentage >= 60"
+                [class.incorrect]="result.percentage < 60">
+            {{ result.percentage >= 60 ? 'PASSED ✅' : 'FAILED ❌' }}
+          </span>
+        </p>
+        <p>
+          <strong>Taken At:</strong>
+          {{ result.takenAt | date:'dd MMM yyyy, hh:mm a' }}
+        </p>
+      </div>
+    </div>
+
+    <div class="text-center mt-3 d-flex gap-3 justify-content-center flex-wrap">
+      <button class="btn btn-outline-info" (click)="viewReportCard()">
+        🖨️ Print Report Card
+      </button>
+      <button class="btn btn-secondary" (click)="goBack()">
+        ← Dashboard
+      </button>
+    </div>
+
+  </ng-container>
 </div>

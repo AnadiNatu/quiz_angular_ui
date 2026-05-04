@@ -1,92 +1,105 @@
-<!-- <div class="container d-flex justify-content-center align-items-center min-vh-100">
-  <div class="card p-4 shadow-lg w-100" style="max-width: 500px;">
-    <h2 class="text-center mb-4">Create Account</h2>
-    <form (ngSubmit)="onSubmit()">
-      <div class="mb-3">
-        <label class="form-label">Full Name</label>
-        <input class="form-control" [(ngModel)]="signUpData.name" name="name" placeholder="Full Name" required />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input class="form-control" [(ngModel)]="signUpData.username" name="username" placeholder="Email" required />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input class="form-control" [(ngModel)]="signUpData.password" name="password" placeholder="Password" type="password" required />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Age</label>
-        <input class="form-control" [(ngModel)]="signUpData.age" name="age" type="number" required />
-      </div>
-
-      <div class="mb-4">
-        <label class="form-label">Role Number</label>
-        <input class="form-control" [(ngModel)]="signUpData.roleNumber" name="roleNumber" type="number" required />
-      </div>
-
-      <button type="submit" class="btn btn-primary w-100">Sign Up</button>
-    </form>
-    <div class="text-center mt-3">
-      <a routerLink="/login" class="text-decoration-none">Already have an account? Login</a>
-    </div>
-  </div>
-</div> -->
-<!-- Foreground content with blur -->
-<!-- Background image wrapper -->
-<div class="background-wrapper" style="background-image: url('/assets/images/signup-bg.jpg');"></div>
-
-<!-- Foreground content with blur -->
 <div class="glass-container">
   <div class="glass-signup-card">
-    <h2 class="text-center mb-4">Create Your Account</h2>
+
+    <div class="card-header-section text-center">
+      <div class="logo-icon">🚀</div>
+      <h2>Create Account</h2>
+      <p class="subtitle">Join the Quiz Platform today</p>
+    </div>
 
     <form (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label class="form-label">Full Name</label>
-        <input class="form-control" [(ngModel)]="signUpData.name" name="name" placeholder="Enter your full name" required />
-      </div>
 
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <input class="form-control" [(ngModel)]="signUpData.username" name="username" type="email" placeholder="Enter your email" required />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input class="form-control" [(ngModel)]="signUpData.password" name="password" type="password" placeholder="Enter a strong password" required />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Age</label>
-        <input class="form-control" [(ngModel)]="signUpData.age" name="age" type="number" placeholder="Your age" required min="0" />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Select Your Role</label>
-        <div class="role-button-group">
-          <button type="button"
-                  class="role-button"
-                  [class.active-role]="signUpData.roleNumber === 0"
-                  (click)="signUpData.roleNumber = 0">Admin</button>
-          <button type="button"
-                  class="role-button"
-                  [class.active-role]="signUpData.roleNumber === 2"
-                  (click)="signUpData.roleNumber = 2">Creator</button>
-          <button type="button"
-                  class="role-button"
-                  [class.active-role]="signUpData.roleNumber === 1"
-                  (click)="signUpData.roleNumber = 1">Participant</button>
+      <div class="form-group mb-3">
+        <label class="form-label">Username</label>
+        <div class="input-wrapper">
+          <span class="input-icon">👤</span>
+          <input class="form-control"
+                 [(ngModel)]="signUpData.username"
+                 name="username"
+                 placeholder="Choose a username"
+                 required />
         </div>
       </div>
 
-      <button type="submit" class="glass-button mt-3">Sign Up</button>
+      <div class="form-group mb-3">
+        <label class="form-label">Email Address</label>
+        <div class="input-wrapper">
+          <span class="input-icon">📧</span>
+          <input class="form-control"
+                 [(ngModel)]="signUpData.email"
+                 name="email"
+                 type="email"
+                 placeholder="Enter your email"
+                 required />
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label class="form-label">Password</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input class="form-control"
+                 [(ngModel)]="signUpData.password"
+                 name="password"
+                 type="password"
+                 placeholder="Create a strong password"
+                 required />
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label class="form-label">Select Your Role</label>
+        <div class="role-grid">
+
+          <button type="button"
+                  class="role-card"
+                  [class.active-role]="signUpData.role === 'ADMIN'"
+                  (click)="selectRole('ADMIN')">
+            <span class="role-icon">🛡️</span>
+            <span class="role-name">Admin</span>
+            <span class="role-desc">Full access</span>
+          </button>
+
+          <button type="button"
+                  class="role-card"
+                  [class.active-role]="signUpData.role === 'CURATOR'"
+                  (click)="selectRole('CURATOR')">
+            <span class="role-icon">✏️</span>
+            <span class="role-name">Curator</span>
+            <span class="role-desc">Create quizzes</span>
+          </button>
+
+          <button type="button"
+                  class="role-card"
+                  [class.active-role]="signUpData.role === 'PARTICIPANT'"
+                  (click)="selectRole('PARTICIPANT')">
+            <span class="role-icon">🎯</span>
+            <span class="role-name">Participant</span>
+            <span class="role-desc">Take quizzes</span>
+          </button>
+
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage"
+           class="alert-glass alert-danger-glass mt-2">
+        ⚠️ {{ errorMessage }}
+      </div>
+      <div *ngIf="successMessage"
+           class="alert-glass alert-success-glass mt-2">
+        ✅ {{ successMessage }}
+      </div>
+
+      <button type="submit" class="glass-button w-100 mt-3">
+        Create Account
+      </button>
+
     </form>
 
     <div class="text-center mt-3">
-      <a routerLink="/login" class="glass-button-sm">Already have an account? Login</a>
+      <span class="text-muted-light">Already have an account?</span>
+      <a routerLink="/login" class="glass-link-btn ms-1">Login</a>
     </div>
+
   </div>
 </div>

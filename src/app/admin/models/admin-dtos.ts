@@ -1,102 +1,152 @@
-export enum UserRoles {
-    ADMIN = 'ADMIN', 
-    PARTICIPANT = 'PARTICIPANT', 
-    CREATOR = 'CREATOR'
+// src/app/admin/models/admin-dtos.ts
+
+// ─── Question DTOs ───────────────────────────────────────────────
+
+export interface CreateQuestionDTO {
+  questionTitle: string;
+  category: string;
+  difficultyLevel: string;
+  rightAnswer: string;
+  option1: string;
+  option2: string;
+  option3: string;
+  option4: string;
 }
 
-export interface CreatedQuizDTO{
-    title : string;
-    category : string;
-    difficultyLevel : string;
-    creatorName : string;
-    questionList : QuestionDTO[];
+export interface QuestionDTO {
+  id: number;
+  questionTitle: string;
+  category: string;
+  difficultyLevel: string;
+  rightAnswer: string;
+  option1: string;
+  option2: string;
+  option3: string;
+  option4: string;
 }
 
-export interface CreateQuestionDTO{
-    category : string;
-    difficultyLevel : string;
-    rightAnswer : string;
-    questionTitle : string;
-    option1 : string;
-    option2 : string;
-    option3 : string;
-    option4 : string;
+export interface QuestionWrapper {
+  questionTitle: string;
+  option1: string;
+  option2: string;
+  option3: string;
+  option4: string;
 }
 
-export interface CreateQuizDTO{
-    quizTitle : string;
-    category : string;
-    difficultyLevel : string;
-    noOfQuestions : number;
+// Full question with id + rightAnswer — returned by quiz-service feign fetch
+export interface QuestionResponseDTO {
+  id: number;
+  questionTitle: string;
+  option1: string;
+  option2: string;
+  option3: string;
+  option4: string;
+  rightAnswer: string;
 }
 
-export interface CreatorUserDTO{
-    creatorName : string;
-    userRoles : UserRoles;
-    questionTitleList : string[];
+// ─── Quiz DTOs ───────────────────────────────────────────────────
+
+// POST /api/quiz  body
+export interface CreateQuizDTO {
+  title: string;
+  category: string;
+  difficultyLevel: string;
+  numberOfQuestions: number;
+  createdByUserId: number;
 }
 
-export class ParticipantUserDTO{
-    participantName : string;
-    userRoles : UserRoles;
-    quizTitleList : string[];
+// GET /api/quiz/{id}  response
+export interface QuizDTO {
+  id: number;
+  title: string;
+  category: string;
+  difficultyLevel: string;
+  createdByUserId: number;
+  creatorUsername: string;
+  questionIds: number[];
+  participantIds: number[];
+  participantUsernames: string[];
 }
 
-export interface QuestionDTO{
-    id: number;
-    category: string;
-    difficultyLevel: string;
-    rightAnswer: string;
-    questionTitle: string;
-    option1: string;
-    option2: string;
-    option3: string;
-    option4: string;
-    quizId: number[];
+// ─── Submit / Response DTOs ──────────────────────────────────────
+
+// One answer in the submit body
+export interface ResponseDTO {
+  questionId: number;
+  selectedAnswer: string | null;
 }
 
-export interface QuestionWrapper{
-    questionTitle : string;
-    option1 : string;
-    option2 : string;
-    option3 : string;
-    option4 : string;
+// POST /api/quiz/submit  body
+export interface QuizSubmitRequest {
+  quizId: number;
+  userId: number;
+  responses: ResponseDTO[];
 }
 
-export interface QuizDTO{
-    title : string;
-    category : string;
-    difficultyLevel : string;
-    creatorUserId : number;
-    creatorUserName : string;
-    questionQuizIds : number[];
-    participantUserName : string[];
+// POST /api/quiz/submit  response
+export interface ResultDTO {
+  quizId: number;
+  quizTitle: string;
+  userId: number;
+  username: string;
+  totalQuestions: number;
+  correctAnswers: number;
+  incorrectAnswers: number;
+  percentage: number;
 }
 
-export interface QuizTakenReponse {
-    quizTitle : string;
-    userName : string;
-    responseList : ResponseDTO[];
+// ─── Result / Stats DTOs ─────────────────────────────────────────
+
+// GET /api/quiz/{quizId}/results  and  /api/quiz/results/user/{userId}
+export interface QuizResultDTO {
+  id: number;
+  quizId: number;
+  quizTitle: string;
+  category: string;
+  difficultyLevel: string;
+  participantId: number;
+  participantUsername: string;
+  participantEmail: string;
+  curatorId: number;
+  curatorUsername: string;
+  totalQuestions: number;
+  correctAnswers: number;
+  incorrectAnswers: number;
+  percentage: number;
+  takenAt: string;
 }
 
-export class ResponseDTO{
-    questionTitle : string;
-    selectedAnswer : string | null;
+// GET /api/quiz/{quizId}/stats
+export interface QuizStatsDTO {
+  quizId: number;
+  quizTitle: string;
+  category: string;
+  difficultyLevel: string;
+  creatorUsername: string;
+  totalParticipants: number;
+  totalQuestions: number;
+  averageScore: number;
+  averagePercentage: number;
+  highestPercentage: number;
+  lowestPercentage: number;
+  passCount: number;
+  failCount: number;
+  participantResults: QuizResultDTO[];
 }
 
-export class ResponseEvaluationDTO{
-    questionTitle : string;
-    correctAnswer : string;
-    participantAnswer : string;
+// ─── Legacy aliases kept for components not yet refactored ───────
+/** @deprecated use QuizResultDTO */
+export interface CreatedQuizDTO {
+  title: string;
+  category: string;
+  difficultyLevel: string;
+  creatorName: string;
+  questionList: QuestionDTO[];
 }
 
-export class ResultDTO{
-    quizId : number;
-    quizTitle : string;
-    userId : number;
-    userName : string;
-    totalQuestion : number;
-    correctAnswer : number;
-    incorrectAnswer : number;
-    percentage : number;
+/** @deprecated use QuizResultDTO */
+export interface CreatorUserDTO {
+  creatorName: string;
+  userRoles: string;
+  questionTitleList: string[];
 }

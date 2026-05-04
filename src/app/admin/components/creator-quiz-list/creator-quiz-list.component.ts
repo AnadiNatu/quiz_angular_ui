@@ -8,72 +8,68 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-creator-quiz-list',
   standalone: true,
-  imports: [CommonModule , FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './creator-quiz-list.component.html',
-  styleUrl: './creator-quiz-list.component.css',
+  styleUrl: './creator-quiz-list.component.css'
 })
 export class CreatorQuizListComponent implements OnInit {
+
   quizzes: QuizDTO[] = [];
   errorMessage = '';
-  hovered: string = '';
-  searchText : string = '';
-  showAllQuizzes : boolean = false;
+  hovered = 0;           // store quiz id instead of title
+  searchText = '';
+  showAllQuizzes = false;
 
-  @Output() viewQuiz = new EventEmitter<string>();
-  @Output() viewAllResults = new EventEmitter<string>(); // NEW output for results
+  @Output() viewQuiz = new EventEmitter<QuizDTO>();
+  @Output() viewAllResults = new EventEmitter<QuizDTO>();
 
   constructor(
     private adminService: AdminServiceService,
     private router: Router,
-    private route : ActivatedRoute
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      const currentPath = this.router.url;
-      this.showAllQuizzes = currentPath.includes('admin/all/quizzes');
-      this.loadQuizzes();
-    })
+    const currentPath = this.router.url;
+    this.showAllQuizzes = currentPath.includes('all/quizzes');
+    this.loadQuizzes();
   }
 
-  loadQuizzes(){
-    if(this.showAllQuizzes){
-      this.adminService.getAllQuiz().subscribe({
-        next : (res) => (this.quizzes = res),
-        error : (err) => (this.errorMessage = err.error?.message || 'Could not load quizzes'),
-      });
-    }else{
-      this.adminService.getAllQuizzesByCreator().subscribe({
-        next : (res) => (this.quizzes = res),
-        error : (err) => (this.errorMessage = err.error?.message || 'Could not load quizzes')
-      });
-    }
+  loadQuizzes(): void {
+    const src$ = this.showAllQuizzes
+      ? this.adminService.getAllQuiz()
+      : this.adminService.getAllQuizzesByCreator();
+
+    src$.subscribe({
+      next:  res  => this.quizzes = res,
+      error: err  => this.errorMessage = err?.error?.message || 'Could not load quizzes'
+    });
   }
 
-  onSearch(){
-    if(!this.searchText.trim()){
+  onSearch(): void {
+    if (!this.searchText.trim()) {
       this.loadQuizzes();
       return;
     }
-
     this.adminService.getQuizByQuizTitle(this.searchText.trim()).subscribe({
-      next : (quiz) => (this.quizzes = [quiz]),
-      error : (err) => (this.errorMessage = err.error?.message || 'Quiz not found'),
-    })
+      next:  quiz => this.quizzes = [quiz],
+      error: err  => this.errorMessage = err?.error?.message || 'Quiz not found'
+    });
   }
 
-  viewQuizDetails(title: string) {
-    this.router.navigate(['/admin/creator/quiz-detail', title]);
+  viewQuizDetails(quiz: QuizDTO): void {
+    this.router.navigate(['/admin/creator/quiz-detail', quiz.title]);
   }
 
-  // FOR CREATOR-QUIZ-LIST COMPONENT
-  onViewQuiz(title: string) {
-    this.viewQuiz.emit(title);
+  onViewQuiz(quiz: QuizDTO): void {
+    this.viewQuiz.emit(quiz);
   }
 
-  onViewResults(title: string) {
-    this.viewAllResults.emit(title);
+  onViewResults(quiz: QuizDTO): void {
+    this.viewAllResults.emit(quiz);
+  }
+
+  takeQuiz(quiz: QuizDTO): void {
+    this.router.navigate(['/admin/participant/quiz', quiz.id]);
   }
 }
-
-// NEED TO MAKE THE COMPONENT RESPONSIVE AND SCROLLABLE 

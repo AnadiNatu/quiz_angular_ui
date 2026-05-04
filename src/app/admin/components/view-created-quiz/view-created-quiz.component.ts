@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { CreatedQuizDTO } from '../../models/admin-dtos';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminServiceService } from '../../services/admin-service.service';
+import { QuizDTO, QuestionResponseDTO } from '../../models/admin-dtos';
 
 @Component({
   selector: 'app-view-created-quiz',
@@ -13,9 +13,10 @@ import { AdminServiceService } from '../../services/admin-service.service';
 })
 export class ViewCreatedQuizComponent implements OnInit {
 
-  quizTitle: string = '';
-  createdQuiz: CreatedQuizDTO | null = null;
-  errorMessage: string = '';
+  quizTitle = '';
+  quiz: QuizDTO | null = null;
+  questionTitles: string[] = [];
+  errorMessage = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -27,16 +28,22 @@ export class ViewCreatedQuizComponent implements OnInit {
     this.quizTitle = this.route.snapshot.paramMap.get('quizTitle') || '';
 
     if (this.quizTitle) {
-      this.adminService.getCreatedQuiz(this.quizTitle).subscribe({
-        next: (res) => this.createdQuiz = res,
-        error: (err) => this.errorMessage = err.error?.message || 'Quiz not found'
+      this.adminService.getQuizByQuizTitle(this.quizTitle).subscribe({
+        next: quiz => {
+          this.quiz = quiz;
+          this.adminService.getQuestionTitlesOfQuiz(quiz.id).subscribe({
+            next:  titles => this.questionTitles = titles,
+            error: ()     => this.questionTitles = []
+          });
+        },
+        error: err => this.errorMessage = err?.error?.message || 'Quiz not found'
       });
     } else {
-      this.errorMessage = 'No quiz title provided';
+      this.errorMessage = 'No quiz title provided.';
     }
   }
 
-  goBack() {
+  goBack(): void {
     this.router.navigate(['/admin']);
   }
 }

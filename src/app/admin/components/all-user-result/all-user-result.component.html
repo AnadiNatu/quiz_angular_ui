@@ -1,5 +1,7 @@
 <div class="container mt-4">
-  <h2 class="text-center text-primary mb-4">All Results for Quiz: {{ quizTitle }}</h2>
+  <h2 class="text-center text-primary mb-4">
+    All Results — {{ quizTitle }}
+  </h2>
 
   <div *ngIf="loading" class="text-center">
     <div class="spinner-border text-primary" role="status"></div>
@@ -8,30 +10,57 @@
 
   <div *ngIf="error" class="alert alert-danger text-center">{{ error }}</div>
 
-  <table *ngIf="!loading && result.length > 0" class="table table-bordered table-hover">
-    <thead class="table-dark">
-      <tr>
-        <th>User ID</th>
-        <th>Username</th>
-        <th>Total Questions</th>
-        <th>Correct Answers</th>
-        <th>Incorrect Answers</th>
-        <th>Percentage</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let res of result">
-        <td>{{ res.userId }}</td>
-        <td>{{ res.userName }}</td>
-        <td>{{ res.totalQuestion }}</td>
-        <td>{{ res.correctAnswer }}</td>
-        <td>{{ res.incorrectAnswer }}</td>
-        <td>{{ res.percentage }}%</td>
-      </tr>
-    </tbody>
-  </table>
+  <ng-container *ngIf="!loading && results.length > 0">
 
-  <div *ngIf="!loading && result.length === 0" class="alert alert-warning text-center">
-    No Results Available For This Quiz.
+    <div class="text-end mb-3">
+      <button class="btn btn-outline-info btn-sm" (click)="viewDocument()">
+        🖨️ Print / Save PDF
+      </button>
+    </div>
+
+    <table class="table table-bordered table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Participant</th>
+          <th>Email</th>
+          <th>Total Q</th>
+          <th class="text-success">Correct</th>
+          <th class="text-danger">Incorrect</th>
+          <th>Score %</th>
+          <th>Status</th>
+          <th>Taken At</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of results; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ r.participantUsername }}</td>
+          <td>{{ r.participantEmail }}</td>
+          <td>{{ r.totalQuestions }}</td>
+          <td class="text-success fw-bold">{{ r.correctAnswers }}</td>
+          <td class="text-danger fw-bold">{{ r.incorrectAnswers }}</td>
+          <td class="fw-bold">{{ r.percentage | number:'1.1-1' }}%</td>
+          <td>
+            <span class="badge"
+                  [class.bg-success]="r.percentage >= 60"
+                  [class.bg-danger]="r.percentage < 60">
+              {{ r.percentage >= 60 ? 'Pass ✅' : 'Fail ❌' }}
+            </span>
+          </td>
+          <td>{{ r.takenAt | date:'dd MMM yyyy, hh:mm a' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </ng-container>
+
+  <div *ngIf="!loading && results.length === 0 && !error"
+       class="alert alert-warning text-center">
+    No results available for this quiz yet.
+  </div>
+
+  <div class="text-center mt-3">
+    <button class="btn btn-secondary" (click)="goBack()">← Back</button>
   </div>
 </div>

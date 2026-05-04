@@ -1,111 +1,129 @@
 import { Component, OnInit } from '@angular/core';
-import { QuestionWrapper, QuizTakenReponse, ResponseDTO, ResponseEvaluationDTO, ResultDTO } from '../../models/admin-dtos';
+import {
+  QuestionResponseDTO, QuizSubmitRequest,
+  ResponseDTO, QuizResultDTO, ResultDTO
+} from '../../models/admin-dtos';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AdminServiceService } from '../../services/admin-service.service';
-import { AuthService } from '../../../auth/services/auth/auth.service';
 import { UserStorageService } from '../../../auth/services/user-storage/user-storage.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-participant-quiz',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule , FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, FormsModule],
   templateUrl: './participant-quiz.component.html',
   styleUrl: './participant-quiz.component.css'
 })
 export class ParticipantQuizComponent implements OnInit {
-  quizTitle = '';
-  username = '';
-  questions: QuestionWrapper[] = [];
-  responseForm!: FormGroup;
-  submitted = false;
-  evaluations: ResponseEvaluationDTO[] = [];
-  timer = 15;
-  showTimer = false;
-  timerInterval: any;
-  resultSummary?: ResultDTO;
 
+  // quiz selection
+  allQuizzes: { id: number; title: string }[] = [];
+  selectedQuizId = 0;
+  searchText = '';
   showSearch = true;
 
-  searchForm!: FormGroup;
-  allQuizTitles: string[] = [];
-  selectedQuizTitle = '';
+  // quiz state
+  quizId = 0;
+  quizTitle = '';
+  questions: QuestionResponseDTO[] = [];
+  responseForm!: FormGroup;
+
+  // timer
+  timer = 5;
+  showTimer = false;
+  private timerInterval: any;
+
+  // result state
+  submitted = false;
+  resultSummary: ResultDTO | null = null;
+  currentResult: QuizResultDTO | null = null;
+
+  // errors
+  errorMessage = '';
 
   constructor(
     private route: ActivatedRoute,
     private adminService: AdminServiceService,
-    private userStorageService: UserStorageService,
+    private userStorage: UserStorageService,
     private fb: FormBuilder,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    const user = this.userStorageService.getUser();
-    if (!user) {
-      console.error('No logged-in user found');
+    if (!this.userStorage.getToken()) {
       this.router.navigate(['/login']);
       return;
     }
-    this.username = user.username;
 
-    this.searchForm = this.fb.group({ searchQuiz: [''] });
-
-    // Load available quizzes for dropdown
-    this.adminService.getAllQuizTitles().subscribe({
-      next: (titles) => this.allQuizTitles = titles,
-      error: () => console.error('Failed to load quiz titles')
+    // Load all quizzes for dropdown
+    this.adminService.getAllQuizzesByCreator().subscribe({
+      next: quizzes => {
+        this.allQuizzes = quizzes.map(q => ({ id: q.id, title: q.title }));
+      },
+      error: () => this.errorMessage = 'Failed to load quizzes.'
     });
 
-    // If quizTitle is passed via route
-    const paramTitle = this.route.snapshot.paramMap.get('quizTitle');
-    if (paramTitle) {
-      this.loadQuiz(paramTitle);
+    // Route param is quiz id
+    const paramId = this.route.snapshot.paramMap.get('quizTitle');
+    if (paramId && !isNaN(Number(paramId))) {
+      this.startQuizTimer(Number(paramId));
     }
   }
 
   onSearch(): void {
-  const title = this.searchForm.value.searchQuiz?.trim();
-  if (title) this.startQuizTimer(title);
-}
-
-onDropdownSelect(): void {
-  if (this.selectedQuizTitle) {
-    this.searchForm.patchValue({ searchQuiz: this.selectedQuizTitle });
-    this.startQuizTimer(this.selectedQuizTitle);
+    const title = this.searchText.trim();
+    if (!title) return;
+    this.adminService.getQuizByQuizTitle(title).subscribe({
+      next: quiz => this.startQuizTimer(quiz.id),
+      error: () => this.errorMessage = 'Quiz not found.'
+    });
   }
-}
 
-startQuizTimer(title: string): void {
-  this.showTimer = true;
-  this.timer = 15;
-
-  if (this.timerInterval) clearInterval(this.timerInterval);
-
-  this.timerInterval = setInterval(() => {
-    this.timer--;
-    if (this.timer <= 0) {
-      clearInterval(this.timerInterval);
-      this.showTimer = false;
-      this.showSearch = false;
-      this.loadQuiz(title);
+  onDropdownSelect(): void {
+    if (this.selectedQuizId) {
+      this.startQuizTimer(this.selectedQuizId);
     }
-  }, 1000);
-}
+  }
 
-  loadQuiz(title: string): void {
-    this.quizTitle = title;
-    this.adminService.getQuizForParticipant(title).subscribe({
-      next: (questions) => {
-        this.questions = questions;
-        this.submitted = false;
-        this.evaluations = [];
-        this.resultSummary = undefined;
+  startQuizTimer(id: number): void {
+    this.quizId   = id;
+    this.showTimer = true;
+    this.timer     = 5;
+    this.errorMessage = '';
+
+    if (this.timerInterval) clearInterval(this.timerInterval);
+
+    this.timerInterval = setInterval(() => {
+      this.timer--;
+      if (this.timer <= 0) {
+        clearInterval(this.timerInterval);
+        this.showTimer  = false;
+        this.showSearch = false;
+        this.loadQuiz(id);
+      }
+    }, 1000);
+  }
+
+  loadQuiz(id: number): void {
+    this.adminService.startQuiz(id).subscribe({
+      next: questions => {
+        this.questions      = questions;
+        this.quizTitle      = questions[0]?.questionTitle ? '' : '';
+        this.submitted      = false;
+        this.resultSummary  = null;
+        this.currentResult  = null;
+
+        // get title from our list
+        const found = this.allQuizzes.find(q => q.id === id);
+        if (found) this.quizTitle = found.title;
+
         this.buildForm();
       },
-      error: (err) => {
-        console.error('Failed to load quiz', err);
-        this.questions = [];
+      error: err => {
+        this.errorMessage = err?.error?.message || 'Failed to start quiz. You may have already taken it.';
+        this.showSearch = true;
       }
     });
   }
@@ -113,165 +131,67 @@ startQuizTimer(title: string): void {
   buildForm(): void {
     const group: { [key: string]: any } = {};
     this.questions.forEach(q => {
-      group[q.questionTitle] = [null];
+      group[q.id.toString()] = [null];
     });
     this.responseForm = this.fb.group(group);
   }
 
   submitQuiz(): void {
     const raw = this.responseForm.getRawValue();
-    const responses: ResponseDTO[] = Object.entries(raw).map(([questionTitle, selectedAnswer]) => ({
-      questionTitle,
-      selectedAnswer: selectedAnswer as string ?? null
+
+    const responses: ResponseDTO[] = this.questions.map(q => ({
+      questionId:     q.id,
+      selectedAnswer: raw[q.id] ?? null
     }));
 
-    const quizResponse: QuizTakenReponse = {
-      quizTitle: this.quizTitle,
-      userName: this.username,
-      responseList: responses
+    const userId = this.userStorage.getUserId() ?? 0;
+
+    const request: QuizSubmitRequest = {
+      quizId:    this.quizId,
+      userId:    userId,
+      responses: responses
     };
 
-    this.adminService.submitQuizResponse(quizResponse).subscribe({
-      next: (res) => {
-        this.evaluations = res;
-        this.submitted = true;
-        this.resultSummary = undefined;
+    this.adminService.submitQuiz(request).subscribe({
+      next: result => {
+        this.resultSummary = result;
+        this.submitted     = true;
       },
-      error: (err) => console.error('Submission failed', err)
+      error: err => {
+        this.errorMessage = err?.error?.message || 'Submission failed.';
+      }
     });
   }
 
-  goToResult(): void {
-      this.adminService.getUserResult(this.quizTitle).subscribe({
-        next: (result) => this.resultSummary = result,
-        error: (err) => console.error('Failed to fetch result summary', err)
-      });
+  viewFullResults(): void {
+    this.adminService.getUserResults().subscribe({
+      next: results => {
+        const found = results.find(r => r.quizId === this.quizId);
+        if (found) this.currentResult = found;
+      },
+      error: () => this.errorMessage = 'Could not fetch detailed results.'
+    });
+  }
+
+  viewReportCard(): void {
+    const userId = this.userStorage.getUserId() ?? 0;
+    this.adminService.getParticipantReportDocument(userId).subscribe({
+      next: html => {
+        const w = window.open('', '_blank');
+        w?.document.write(html);
+        w?.document.close();
+      },
+      error: () => alert('Failed to load report card.')
+    });
+  }
+
+  retakeSearch(): void {
+    this.showSearch    = true;
+    this.questions     = [];
+    this.submitted     = false;
+    this.resultSummary = null;
+    this.currentResult = null;
+    this.errorMessage  = '';
+    this.quizTitle     = '';
   }
 }
-
-
-// HEY CHAT MY THESE FUNCTIONALTIES ARE NOT WORKING IN THE "PARTICIPANT-QUIZ" THE QUIZ RESULTS MUST BE SHOWN AFTER THE USER HAS TAKEN THE QUIZ 
-// THESE TWO FUNCTIONALITIES MUST BE SHOWN TO THE USER AFTER THE USER HAS TAKEN THE QUIZ
-// SERVICES
-//   1.) THIS SERVICE SHOULD BE TRIGGERED AFTER THE USER HAS CLICKED THE SUBMIT BUTTON . THIS SERVICE SHOWS THE SELECTED ANSWERS AND RIGHT ANSWER OF THE QUESTION . ADD CSS AND EDIT HTML TO SEE WHETHER THE ANSWER SELECTED IS RIGHT OR WRONG 
-//   submitQuizResponse(response : QuizTakenReponse) : Observable<ResponseEvaluationDTO[]>{
-//     return this.http.post<ResponseEvaluationDTO[]>(`${this.BASE_URL}responses/submit` , response , {
-//       headers: this.createAuthorizationHeader()
-//     });
-//   }
-// MODELS
-// export interface QuizTakenReponse {
-//     quizTitle : string;
-//     userName : string;
-//     responseList : ResponseDTO[];
-// }
-
-// export class ResponseDTO{
-//     questionTitle : string;
-//     selectedAnswer : string | null;
-// }
-// THE NEXT SERVICE THAT SHOULD BE TRIGGERED WHEN AFTER SEEING THE RESPONSE OF THE QUIZ THE USER WANTS TO SEE THE RESULT OF THE QUIZ TAKEN 
-// SERVICES
-//   1.) THIS SERVICE SHOULD BE TRIGGERED AFTER THE USER CLICKS VIEW RESULT AFTER THE RESPONSE
-//   getUserResult(quizTitle : string) : Observable<ResultDTO>{
-//     return this.http.get<ResultDTO>(`${this.BASE_URL}results/user/${quizTitle}` , {
-//       headers: this.createAuthorizationHeader()
-//     });
-//   }
-// MODELS
-// export class ResultDTO{
-//     quizId : number;
-//     quizTitle : string;
-//     userId : number;
-//     userName : string;
-//     totalQuestion : number;
-//     correctAnswer : number;
-//     incorrectAnswer : number;
-//     percentage : number;
-// } 
-
-// AND ALSO REMOVE THE DROPDOWN AND SEARCH BAR AFTER THE QUIZ IS STARTED AFTER THE TIMER
-
-
-
-
-// HEY CHAT CAN YOU ADD THIS FUNCTIONALITY TO SEE THE RESULT OF THE USER AFTER THE USER TAKES THE TEST 
-//   getUserResult(quizTitle : string) : Observable<ResultDTO>{
-//     return this.http.get<ResultDTO>(`${this.BASE_URL}results/user/${quizTitle}` , {
-//       headers: this.createAuthorizationHeader()
-//     });
-//   }
-// SO THAT THE USER CAN SEE THE RESULT OF HIS OR HER QUIZ ATTEMPT 
-// export class ResultDTO{
-//     quizId : number;
-//     quizTitle : string;
-//     userId : number;
-//     userName : string;
-//     totalQuestion : number;
-//     correctAnswer : number;
-//     incorrectAnswer : number;
-//     percentage : number;
-// }
-// CAN YOU EDIT THE TS AND HTML FILES OF THE COMPONENT
-// --->TS FILE
-// --->HTML FILE
-
-// NEED TO ADD THESE FUNCTIONALITIES TO THE COMPONENT SUCH THAT THE USER CAN SEARCH OR SEE WHAT QUIZ ARE AVAILBLE TO BE TAKEN USING THESE SERVICES
-  // getQuizByQuizTitle(title : string) : Observable<QuizDTO>{
-  //   return this.http.get<QuizDTO>(`${this.BASE_URL}getQuiz/${title}` , {
-  //     headers : this.createAuthorizationHeader()
-  //   })
-  // }
-
-  // getAllQuizTitles() : Observable<string[]>{
-  //   return this.http.get<string[]>(`${this.BASE_URL}getQuizTitles` , {
-  //     headers : this.createAuthorizationHeader()
-  //   })
-  // }
-// AND ONCE THE QUIZ TITLE IS SELETED THIS SERVICE IS TRIGGERED 
-  // getQuizForParticipant(quizTitle : string) : Observable<QuestionWrapper[]>{
-  //   return this.http.get<QuestionWrapper[]>(`${this.BASE_URL}participant/${quizTitle}` , {
-  //     headers: this.createAuthorizationHeader()
-  //   });
-  // }
-// SUCH THAT THE USER CAN TAKE THE QUIZ . THE RESPONSES OF WHICH ARE SENT TO THE BACKEND USING THIS SERVICE 
-  // submitQuizResponse(response : QuizTakenReponse) : Observable<ResponseEvaluationDTO[]>{
-  //   return this.http.post<ResponseEvaluationDTO[]>(`${this.BASE_URL}responses/submit` , response , {
-  //     headers: this.createAuthorizationHeader()
-  //   });
-  // }
-// AFTER WHICH THE USER SHOULD GET TO SEE THE RESULT USING THIS SERVICE TRIGGER
-  // getUserResult(quizTitle : string) : Observable<ResultDTO>{
-  //   return this.http.get<ResultDTO>(`${this.BASE_URL}results/user/${quizTitle}` , {
-  //     headers: this.createAuthorizationHeader()
-  //   });
-  // }
-// RELATED MODELS
-// export interface QuestionWrapper{
-//     questionTitle : string;
-//     option1 : string;
-//     option2 : string;
-//     option3 : string;
-//     option4 : string;
-// }
-// export class ResponseDTO{
-//     questionTitle : string;
-//     selectedAnswer : string | null;
-// }
-
-// export class ResponseEvaluationDTO{
-//     questionTitle : string;
-//     correctAnswer : string;
-//     participantAnswer : string;
-// }
-
-// export class ResultDTO{
-//     quizId : number;
-//     quizTitle : string;
-//     userId : number;
-//     userName : string;
-//     totalQuestion : number;
-//     correctAnswer : number;
-//     incorrectAnswer : number;
-//     percentage : number;
-// }

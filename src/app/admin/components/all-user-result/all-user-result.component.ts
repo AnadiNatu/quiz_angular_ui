@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ResultDTO } from '../../models/admin-dtos';
-import { ActivatedRoute } from '@angular/router';
+import { QuizResultDTO } from '../../models/admin-dtos';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AdminServiceService } from '../../services/admin-service.service';
 import { CommonModule } from '@angular/common';
 
@@ -11,30 +11,55 @@ import { CommonModule } from '@angular/common';
   templateUrl: './all-user-result.component.html',
   styleUrl: './all-user-result.component.css'
 })
-export class AllUserResultComponent implements OnInit{
-  quizTitle: string = '';
-  result: ResultDTO[] = [];
-  loading: boolean = true;
-  error: string = '';
+export class AllUserResultComponent implements OnInit {
+
+  quizId: number = 0;
+  quizTitle = '';
+  results: QuizResultDTO[] = [];
+  loading = true;
+  error = '';
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private adminService: AdminServiceService
   ) {}
 
   ngOnInit(): void {
-    this.quizTitle = this.route.snapshot.paramMap.get('quizTitle') || '';
-    if (this.quizTitle) {
-      this.adminService.getAllUserResults(this.quizTitle).subscribe({
-        next: (res) => {
-          this.result = res;
-          this.loading = false;
+    // Route param is now quizId (number)
+    const param = this.route.snapshot.paramMap.get('quizTitle');
+    this.quizId = Number(param);
+
+    if (this.quizId) {
+      this.adminService.getAllUserResults(this.quizId).subscribe({
+        next: res => {
+          this.results  = res;
+          this.quizTitle = res[0]?.quizTitle ?? `Quiz #${this.quizId}`;
+          this.loading  = false;
         },
         error: () => {
-          this.error = '❌ Failed to load result';
+          this.error   = '❌ Failed to load results';
           this.loading = false;
         }
       });
+    } else {
+      this.error   = 'Invalid quiz ID';
+      this.loading = false;
     }
+  }
+
+  viewDocument(): void {
+    this.adminService.getQuizResultDocument(this.quizId).subscribe({
+      next: html => {
+        const w = window.open('', '_blank');
+        w?.document.write(html);
+        w?.document.close();
+      },
+      error: () => alert('Failed to load document')
+    });
+  }
+
+  goBack(): void {
+    this.router.navigate(['/admin/creator/quizzes']);
   }
 }

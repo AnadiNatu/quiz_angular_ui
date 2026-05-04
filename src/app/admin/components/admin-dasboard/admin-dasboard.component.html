@@ -1,140 +1,88 @@
-<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" [routerLink]="['/']">Admin Panel</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarNav" aria-controls="navbarNav"
-            aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a [routerLink]="['/admin/create-quiz']" class="nav-link">Create Quiz</a>
-        </li>
-        <li class="nav-item">
-          <a [routerLink]="['/admin/create-question']" class="nav-link">Create Question</a>
-        </li>
-        <li class="nav-item">
-          <a [routerLink]="['/admin/creator/quizzes']" class="nav-link">My Quizzes</a>
-        </li>
-        <li class="nav-item">
-          <a [routerLink]="['/admin/results/all', quizTitle]" class="nav-link">All Results</a>
-        </li>
-        <li class="nav-item">
-          <a [routerLink]="['/admin/participant/quiz', quizTitle]" class="nav-link">Take Quiz as Participant</a>
-        </li>
-        <li class="nav-item">
-          <a [routerLink]="['/admin/quiz/view', quizTitle]" class="nav-link">View Created Quiz</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<div class="mt-5 text-center">
-  <h2>Welcome to the Admin Dashboard</h2>
-  <p>Use the navbar to create quizzes, add questions, and view results.</p>
-</div>
-
-<div class="container mt-4">
-  <div class="row">
-    Created Quizzes
-    <div class="col-md-6">
-      <h4 class="text-primary">Your Created Quizzes</h4>
-      <app-creator-quiz-list (viewQuiz)="viewCreatedQuiz($event)"></app-creator-quiz-list>
-    </div>
-
-    Taken Quizzes
-    <div class="col-md-6">
-      <h4 class="text-success">Quizzes You've Taken</h4>
-      <ul class="list-group">
-        <li 
-          class="list-group-item d-flex justify-content-between align-items-center"
-          *ngFor="let title of takenQuizzes">
-          {{ title }}
-          <button class="btn btn-outline-primary btn-sm" (click)="viewParticipantResult(title)">
-            View Result
-          </button>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div> -->
-<!-- NAVBAR -->
-<!-- Responsive Glass Navbar -->
+<!-- Navbar -->
 <nav class="glass-navbar">
   <div class="nav-left">
-    <a class="brand" (click)="toggleAdminCard()">Admin Panel</a>
+    <a class="brand" (click)="toggleAdminCard()">
+      {{ userRole }} Panel
+    </a>
   </div>
 
-  <div class="nav-toggle" (click)="toggleMenu = !toggleMenu">
-    &#9776;
-  </div>
+  <div class="nav-toggle" (click)="toggleMenu = !toggleMenu">&#9776;</div>
 
   <div class="nav-right" [class.open]="toggleMenu">
-    <a routerLink="/admin" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+    <a routerLink="/admin"
+       routerLinkActive="active-link"
+       [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
     <a routerLink="/admin/create-quiz" routerLinkActive="active-link">Create Quiz</a>
     <a routerLink="/admin/create-question" routerLinkActive="active-link">Create Question</a>
     <a routerLink="/admin/all/quizzes" routerLinkActive="active-link">All Quizzes</a>
     <a routerLink="/admin/creator/quizzes" routerLinkActive="active-link">My Quizzes</a>
     <a routerLink="/admin/participant/quiz" routerLinkActive="active-link">Take Quiz</a>
-    <a href="#" (click)="logout()">Log Out</a>
+    <a routerLink="/admin/participant/result/0" routerLinkActive="active-link">My Results</a>
+    <a href="#" (click)="logout(); $event.preventDefault()">Log Out</a>
   </div>
 </nav>
 
-<!-- Admin Info Card -->
-<div *ngIf="showAdminCard" class="glass-card admin-info-card">
-  <h2>Admin Info</h2>
+<!-- User Info Card -->
+<div *ngIf="showAdminCard" class="glass-card admin-info-card mt-2">
+  <h4>User Info</h4>
   <ng-container *ngIf="userDetails">
     <p><strong>Username:</strong> {{ userDetails.username }}</p>
-    <p><strong>Name:</strong> {{ userDetails.name }}</p>
-    <p><strong>Age:</strong> {{ userDetails.age }}</p>
-    <p><strong>Role:</strong> {{ userDetails.userRoles || 'N/A' }}</p>
+    <p><strong>Email:</strong>    {{ userDetails.email }}</p>
+    <p><strong>Role:</strong>     {{ userDetails.role }}</p>
+    <p><strong>Active:</strong>   {{ userDetails.enabled ? 'Yes' : 'No' }}</p>
   </ng-container>
-  <button class="glass-button-sm" (click)="toggleAdminCard()">Close</button>
+  <button class="glass-button-sm mt-2" (click)="toggleAdminCard()">Close</button>
 </div>
 
 <!-- Greeting -->
-<div class="dashboard-header text-center">
+<div class="dashboard-header text-center mt-4 mb-3">
   <h1>Welcome, {{ username }} 👋</h1>
-  <p>Manage your quizzes, view results, and create questions from here.</p>
+  <p>Manage quizzes, view results, and create questions from here.</p>
 </div>
 
 <!-- Dashboard Grid -->
 <div class="dashboard-grid">
+
   <!-- Profile Card -->
   <div class="glass-card profile-card text-center">
     <img [src]="profileImageUrl" alt="Profile" class="profile-avatar" />
     <h3>{{ username }}</h3>
+    <p class="text-muted">{{ userRole }}</p>
     <label class="upload-btn">
       Change Photo
       <input type="file" (change)="uploadProfilePhoto($event)" hidden />
     </label>
   </div>
 
-  <!-- Created Quizzes with scrollable container -->
+  <!-- Created Quizzes -->
   <div class="glass-card">
     <h3>Your Created Quizzes</h3>
     <div class="quiz-scroll-container">
-      <app-creator-quiz-list (viewQuiz)="viewCreatedQuiz($event)"></app-creator-quiz-list>
+      <app-creator-quiz-list
+        (viewQuiz)="viewCreatedQuiz($event)"
+        (viewAllResults)="viewAllResultsForQuiz($event)">
+      </app-creator-quiz-list>
     </div>
   </div>
 
   <!-- Taken Quizzes -->
   <div class="glass-card">
     <h3>Quizzes You've Taken</h3>
-    <ul class="taken-quiz-list">
-      <li *ngFor="let title of takenQuizzes" class="d-flex justify-content-between align-items-center mb-2">
+    <ul class="taken-quiz-list list-unstyled">
+      <li *ngFor="let title of takenQuizTitles"
+          class="d-flex justify-content-between align-items-center mb-2">
         <span>{{ title }}</span>
-        <button class="glass-button-sm" (click)="viewParticipantResult(title)">View Result</button>
+        <button class="glass-button-sm"
+                (click)="viewParticipantResult(title)">
+          View Result
+        </button>
       </li>
-
+      <li *ngIf="takenQuizTitles.length === 0" class="text-muted">
+        No quizzes taken yet.
+      </li>
     </ul>
   </div>
-</div>
-<!-- NEED TO ADD THE FUNCTIONALITY OF QUIZ TAKEN BY PARTICIPANT  -->
 
+</div>
 
 <router-outlet></router-outlet>
-

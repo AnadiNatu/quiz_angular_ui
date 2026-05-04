@@ -1,77 +1,94 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+// src/app/auth/services/auth/auth.service.ts
 
-import { SignUpRequest , UsersDTO , LoginAuthRequest , LoginAuthResponse , ForgotPasswordRequest , ResetPasswordRequest, UserRoles} from '../../models/dtos';
-import { Observable , tap} from 'rxjs';
-import { UserStorageService } from '../user-storage/user-storage.service';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable, tap } from "rxjs";
+import { SignUpRequest, SignUpResponse, LoginAuthRequest, LoginAuthResponse, ForgotPasswordRequest, ResetPasswordRequest } from "../../models/dtos";
+import { UserStorageService } from "../user-storage/user-storage.service";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
+
   private BASE_URL = 'http://localhost:8080/api/auth';
 
-  constructor(private http : HttpClient , private storage : UserStorageService) { }
+  constructor(
+    private http: HttpClient,
+    private storage: UserStorageService
+  ) {}
 
-  signup(data : SignUpRequest) : Observable<UsersDTO> {
-    return this.http.post<UsersDTO>(`${this.BASE_URL}/signup` , data);
+  // POST /api/auth/signup
+  signup(data: SignUpRequest): Observable<SignUpResponse> {
+    return this.http.post<SignUpResponse>(`${this.BASE_URL}/signup`, data);
   }
 
-  login(data : LoginAuthRequest) : Observable<LoginAuthResponse>{
-    return  this.http.post<LoginAuthResponse>(`${this.BASE_URL}/login` , data).pipe(
-      tap((response : LoginAuthResponse) => {
-        this.storage.saveToken(response.jwt);
+  // POST /api/auth/login  →  { token, username, role }
+  login(data: LoginAuthRequest): Observable<LoginAuthResponse> {
+    return this.http.post<LoginAuthResponse>(`${this.BASE_URL}/login`, data).pipe(
+      tap((response: LoginAuthResponse) => {
+        this.storage.saveToken(response.token);
         this.storage.saveUser({
-          id: response.id,
-          name: '',
-          username: data.username,
-          password: '',
-          age: 0,
-          userRoles: response.userRoles
+          id: 0,                       // will be enriched by /api/auth/{id} if needed
+          username: response.username,
+          email: '',
+          role: response.role,
+          enabled: true,
+          accountNonExpired: true,
+          accountNonLocked: true,
+          credentialsNonExpired: true
         });
       })
     );
   }
 
-  forgotPassword(data : ForgotPasswordRequest) : Observable<string>{
-    return this.http.post<string>(`${this.BASE_URL}/forgot-password` , data);
+  // GET /api/auth/{id}
+  getUserById(id: number): Observable<any> {
+    return this.http.get(`${this.BASE_URL}/${id}`, {
+      headers: { Authorization: `Bearer ${this.storage.getToken()}` }
+    });
   }
 
-  resetPassword(data : ResetPasswordRequest) : Observable<any> {
-    return this.http.post(`${this.BASE_URL}/reset-password` , data);   
+  // GET /api/auth/all  (ADMIN only)
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.BASE_URL}/all`, {
+      headers: { Authorization: `Bearer ${this.storage.getToken()}` }
+    });
   }
 
-  uploadProfilePhoto(username : string , file : File) : Observable<string>{
-    const formData = new FormData();
-    formData.append('file' , file);
-    return this.http.post(`${this.BASE_URL}/username/upload-profile-photo` , formData , {
+  // POST /api/auth/forgot-password?email=...
+  forgotPassword(data: ForgotPasswordRequest): Observable<string> {
+    const params = new HttpParams().set('email', data.email);
+    return this.http.post(`${this.BASE_URL}/forgot-password`, null, {
+      params,
       responseType: 'text'
     });
   }
 
-  getProfilePhoto(username : string) : Observable<Blob>{
-    return this.http.get(`${this.BASE_URL}/${username}/profile-photo` , {
-      responseType : 'blob'
+  // POST /api/auth/reset-password?email=...&token=...&newPassword=...
+  resetPassword(data: ResetPasswordRequest): Observable<string> {
+    const params = new HttpParams()
+      .set('email', data.email)
+      .set('token', data.token)
+      .set('newPassword', data.newPassword);
+    return this.http.post(`${this.BASE_URL}/reset-password`, null, {
+      params,
+      responseType: 'text'
     });
   }
-  
-  uploadProfilePicture(userId: number, file: File): Observable<string> {
-  const formData = new FormData();
-  formData.append('file', file);
 
-  return this.http.post(`${this.BASE_URL}/upload-profile-picture/${userId}`, formData, {
-    responseType: 'text'
-  });
+  // PUT /api/auth/disable/{id}  (ADMIN only)
+  disableUser(id: number): Observable<any> {
+    return this.http.put(`${this.BASE_URL}/disable/${id}`, null, {
+      headers: { Authorization: `Bearer ${this.storage.getToken()}` }
+    });
+  }
+
+  uploadProfilePhoto(username: string, file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(
+      `${this.BASE_URL}/${username}/upload-profile-photo`,
+      formData,
+      { responseType: 'text' }
+    );
+  }
 }
-}
-
-  // How to Use This in a Component
-  // getUserProfilePhoto(userId: number): void {
-//   this.authService.getProfilePhoto(userId).subscribe(photoBlob => {
-//     const objectURL = URL.createObjectURL(photoBlob);
-//     this.profileImageUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
-//   });
-// }
-// <img *ngIf="profileImageUrl" [src]="profileImageUrl" class="img-thumbnail" />
-// ⚠️ You’ll need to inject DomSanitizer from @angular/platform-browser.
-

@@ -1,120 +1,114 @@
-<!-- <div class="container mt-5">
-  <h2 class="mb-4">Participant Quiz</h2>
-
-  <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="input-group mb-4">
-    <input type="text" class="form-control" formControlName="searchQuiz" placeholder="Enter quiz title..." />
-    <button type="submit" class="btn btn-primary">Search Quiz</button>
-  </form>
-
-  <div *ngIf="quizTitle && questions.length > 0" class="mb-4">
-    <h4 class="text-success">Quiz: {{ quizTitle }}</h4>
-  </div>
-
-  <form *ngIf="questions.length > 0 && !submitted" [formGroup]="responseForm" (ngSubmit)="submitQuiz()">
-    <div *ngFor="let q of questions" class="mb-4 p-3 border rounded shadow-sm bg-light">
-      <p class="fw-bold">{{ q.questionTitle }}</p>
-      <div class="form-check" *ngFor="let opt of [q.option1, q.option2, q.option3, q.option4]">
-        <input class="form-check-input" type="radio" [value]="opt" [formControlName]="q.questionTitle" [id]="q.questionTitle + opt">
-        <label class="form-check-label" [for]="q.questionTitle + opt">
-          {{ opt }}
-        </label>
-      </div>
-    </div>
-
-    <button type="submit" class="btn btn-success">Submit Quiz</button>
-  </form>
-
-  <div *ngIf="submitted && evaluations.length > 0" class="mt-5">
-    <h3>Evaluation</h3>
-    <div *ngFor="let eval of evaluations" class="border-bottom pb-3 mb-3">
-      <p><strong>Question:</strong> {{ eval.questionTitle }}</p>
-      <p><strong>Your Answer:</strong>
-        <span *ngIf="eval.participantAnswer; else noAnswer">{{ eval.participantAnswer }}</span>
-        <ng-template #noAnswer><em>No answer provided</em></ng-template>
-      </p>
-      <p><strong>Correct Answer:</strong> {{ eval.correctAnswer }}</p>
-    </div>
-
-    <button class="btn btn-primary" (click)="goToResult()">View Final Result</button>
-  </div>
-</div> -->
-<!-- Add a functionality to see all the quiz and quiz based on category from the  -->
-<div class="glass-container scroll-wrapper">
+<div class="scroll-wrapper">
   <div class="glass-card">
-
     <h2 class="text-center mb-4">🎯 Take a Quiz</h2>
 
-    <!-- Search Section -->
-<form *ngIf="showSearch" [formGroup]="searchForm" (ngSubmit)="onSearch()" class="mb-4">
-  <input type="text" class="form-control mb-2" formControlName="searchQuiz" placeholder="Search quiz by title..." />
-  <button type="submit" class="glass-button">Search</button>
-</form>
-
-    <!-- OR Dropdown -->
-<div *ngIf="showSearch" class="mb-4">
-  <select class="form-select" [(ngModel)]="selectedQuizTitle" (change)="onDropdownSelect()">
-    <option disabled selected value="">-- Select a Quiz --</option>
-    <option *ngFor="let title of allQuizTitles" [value]="title">{{ title }}</option>
-  </select>
-</div>
-    <!-- Loading Timer -->
-    <div *ngIf="showTimer" class="text-center mb-3 text-warning fw-bold">
-      ⏳ Loading quiz in {{ timer }} seconds...
+    <!-- Error -->
+    <div *ngIf="errorMessage" class="alert alert-danger text-center">
+      {{ errorMessage }}
+      <button class="btn btn-link p-0 ms-2" (click)="retakeSearch()">Try again</button>
     </div>
 
-    <!-- Quiz Info -->
-    <div *ngIf="quizTitle && questions.length > 0" class="text-center mb-4">
-      <h4 class="text-success">Currently Attempting: {{ quizTitle }}</h4>
+    <!-- Search & Dropdown -->
+    <ng-container *ngIf="showSearch && !submitted">
+      <div class="mb-3">
+        <input type="text" class="form-control mb-2"
+               [(ngModel)]="searchText"
+               placeholder="Search quiz by title..." />
+        <button class="glass-button w-100" (click)="onSearch()">Search</button>
+      </div>
+
+      <div class="mb-4">
+        <select class="form-select"
+                [(ngModel)]="selectedQuizId"
+                (change)="onDropdownSelect()">
+          <option [value]="0" disabled>-- Select a Quiz --</option>
+          <option *ngFor="let q of allQuizzes" [value]="q.id">{{ q.title }}</option>
+        </select>
+      </div>
+    </ng-container>
+
+    <!-- Timer -->
+    <div *ngIf="showTimer" class="text-center mb-3 text-warning fw-bold fs-5">
+      ⏳ Starting in {{ timer }} seconds...
+    </div>
+
+    <!-- Quiz currently active -->
+    <div *ngIf="quizTitle && questions.length > 0 && !submitted"
+         class="text-center mb-4">
+      <h4 class="text-success">📝 {{ quizTitle }}</h4>
     </div>
 
     <!-- Quiz Form -->
-    <form *ngIf="questions.length > 0 && !submitted" [formGroup]="responseForm" (ngSubmit)="submitQuiz()">
+    <form *ngIf="questions.length > 0 && !submitted"
+          [formGroup]="responseForm"
+          (ngSubmit)="submitQuiz()">
       <div class="quiz-scroll-container">
-        <div *ngFor="let q of questions" class="quiz-question-card mb-4">
-          <p class="fw-bold mb-2">📌 {{ q.questionTitle }}</p>
-          <div class="form-check" *ngFor="let opt of [q.option1, q.option2, q.option3, q.option4]">
-            <input class="form-check-input" type="radio" [value]="opt" [formControlName]="q.questionTitle" [id]="q.questionTitle + opt">
-            <label class="form-check-label" [for]="q.questionTitle + opt">{{ opt }}</label>
+        <div *ngFor="let q of questions; let i = index"
+             class="quiz-question-card mb-4">
+          <p class="fw-bold mb-2">📌 Q{{ i + 1 }}. {{ q.questionTitle }}</p>
+          <div class="form-check"
+               *ngFor="let opt of [q.option1, q.option2, q.option3, q.option4]">
+            <input class="form-check-input"
+                   type="radio"
+                   [value]="opt"
+                   [formControlName]="q.id.toString()"
+                   [id]="'q' + q.id + opt" />
+            <label class="form-check-label" [for]="'q' + q.id + opt">
+              {{ opt }}
+            </label>
           </div>
         </div>
       </div>
-
       <div class="text-center my-4">
         <button type="submit" class="glass-button">Submit Quiz</button>
       </div>
     </form>
 
-    <!-- Result Display -->
-<div *ngIf="submitted && evaluations.length > 0" class="mt-5">
-  <h3 class="text-center mb-4">📊 Your Evaluation</h3>
+    <!-- Result Summary (after submit) -->
+    <ng-container *ngIf="submitted && resultSummary">
+      <div class="glass-card text-center mt-4">
+        <h3 class="text-info mb-3">📊 Quiz Result</h3>
+        <p><strong>Quiz:</strong> {{ resultSummary.quizTitle }}</p>
+        <p><strong>Total Questions:</strong> {{ resultSummary.totalQuestions }}</p>
+        <p class="text-success">
+          <strong>Correct:</strong> {{ resultSummary.correctAnswers }}
+        </p>
+        <p class="text-danger">
+          <strong>Incorrect:</strong> {{ resultSummary.incorrectAnswers }}
+        </p>
+        <p>
+          <strong>Score:</strong>
+          {{ resultSummary.percentage | number:'1.1-1' }}%
+        </p>
+        <div class="mt-3 d-flex gap-3 justify-content-center flex-wrap">
+          <button class="glass-button" (click)="viewFullResults()">
+            📋 Detailed Results
+          </button>
+          <button class="glass-button" (click)="viewReportCard()">
+            🖨️ Report Card
+          </button>
+          <button class="glass-button alt" (click)="retakeSearch()">
+            🔄 Take Another Quiz
+          </button>
+        </div>
+      </div>
 
-  <div *ngFor="let eval of evaluations" class="quiz-question-card border-bottom pb-3 mb-4"
-       [ngClass]="{
-         'correct-answer': eval.participantAnswer === eval.correctAnswer,
-         'incorrect-answer': eval.participantAnswer && eval.participantAnswer !== eval.correctAnswer
-       }">
-    <p><strong>Q:</strong> {{ eval.questionTitle }}</p>
-    <p><strong>Your Answer:</strong> {{ eval.participantAnswer || 'No Answer Provided' }}</p>
-    <p><strong>Correct Answer:</strong> {{ eval.correctAnswer }}</p>
-  </div>
+      <!-- Detailed per-question breakdown -->
+      <div *ngIf="currentResult" class="mt-4">
+        <h5 class="text-info text-center">Full Result Record</h5>
+        <p class="text-center text-muted">
+          Taken at: {{ currentResult.takenAt | date:'dd MMM yyyy, hh:mm a' }}
+        </p>
+        <p class="text-center">
+          Status:
+          <span class="badge"
+                [class.bg-success]="currentResult.percentage >= 60"
+                [class.bg-danger]="currentResult.percentage < 60">
+            {{ currentResult.percentage >= 60 ? 'PASSED ✅' : 'FAILED ❌' }}
+          </span>
+        </p>
+      </div>
+    </ng-container>
 
-  <div class="text-center">
-    <button class="glass-button" (click)="goToResult()">View Final Result</button>
   </div>
 </div>
-
-    <!-- Result Summary Section -->
-<div *ngIf="resultSummary" class="text-center mt-5 glass-card">
-  <h4 class="mb-3 text-info">📋 Quiz Summary</h4>
-  <p><strong>Quiz Title:</strong> {{ resultSummary.quizTitle }}</p>
-  <p><strong>User:</strong> {{ resultSummary.userName }}</p>
-  <p><strong>Total Questions:</strong> {{ resultSummary.totalQuestion }}</p>
-  <p class="text-success"><strong>Correct Answers:</strong> {{ resultSummary.correctAnswer }}</p>
-  <p class="text-danger"><strong>Incorrect Answers:</strong> {{ resultSummary.incorrectAnswer }}</p>
-  <p><strong>Percentage:</strong> {{ resultSummary.percentage }}%</p>
-</div>
-
-  </div>
-</div>
-
-

@@ -1,119 +1,184 @@
-.glass-container{
+.glass-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
-  background: linear-gradient(to right , #0f2027 , #203a43 , #2c5364);
   min-height: 100vh;
-}
-
-.glass-signup-card{
-  background: rgba(0 , 188 , 212 , 0.1 );
   padding: 2rem;
-  border-radius: 1rem;
-  width: 100%;
-  max-width: 500px;
-  color: #f1f;
-  box-shadow: 0 8px 32px 0 rgba(31 , 38 , 135 , 0.4 );
-  transition: background 0.5s ease transform 0.3s ease , color 0.3s ease;
 }
 
-.glass-signup-card:hover{
-  background: rgba(15 , 76 , 117 , 0.3);
-  transform: translateY(-6px);
-  color: #f9f9;
+.glass-signup-card {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 2.5rem 2rem;
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: slideUp 0.5s ease forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.card-header-section { margin-bottom: 1.5rem; }
+
+.logo-icon {
+  font-size: 2.8rem;
+  display: block;
+  margin-bottom: 0.4rem;
 }
 
 h2 {
-  text-align: center;
   color: #f1c40f;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
 }
 
-label {
-  margin-top: 1rem;
-  display: block;
-  font-weight: bold;
+.subtitle {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.88rem;
+  margin-top: 0.25rem;
+}
+
+.form-label {
   color: #00bcd4;
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.8rem;
+  font-size: 1rem;
+  z-index: 2;
 }
 
 .form-control {
   width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.3rem;
-  background: #1e1e2f;
-  border: 1px solid #00bcd4;
-  color: yellow;
-  border-radius: 0.5rem;
-  transition: border 0.3s ease;
+  padding: 0.65rem 0.75rem 0.65rem 2.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(0, 188, 212, 0.4);
+  color: #fff;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
 }
+
+.form-control::placeholder { color: rgba(255, 255, 255, 0.3); }
 
 .form-control:focus {
-  border-color: #2196f3;
   outline: none;
-  box-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+  border-color: #00bcd4;
+  box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.2);
+  background: rgba(255, 255, 255, 0.1);
 }
 
-/* Role buttons */
-.role-button-group {
+/* Role Cards */
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.role-card {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: 0.5rem;
-}
-
-.role-button {
-  flex: 1;
-  padding: 0.4rem;
-  border-radius: 0.5rem;
-  background: transparent;
-  border: 1px solid #00bcd4;
-  color: #00bcd4;
-  font-weight: bold;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.85rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.85rem;
+  cursor: pointer;
   transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.role-button:hover {
-  background: rgba(0, 188, 212, 0.2);
-}
-
-.active-role {
-  background-color: #00bcd4;
-  color: black;
-}
-
-/* Main Submit Button */
-.glass-button {
-  margin-top: 1.5rem;
-  background: linear-gradient(to right, #00bcd4, #2196f3);
-  border: none;
-  padding: 0.75rem;
-  border-radius: 1rem;
-  width: 100%;
   color: #fff;
-  font-weight: bold;
+}
+
+.role-card:hover {
+  background: rgba(0, 188, 212, 0.15);
+  border-color: rgba(0, 188, 212, 0.5);
+  transform: translateY(-2px);
+}
+
+.role-card.active-role {
+  background: rgba(0, 188, 212, 0.25);
+  border-color: #00bcd4;
+  box-shadow: 0 0 12px rgba(0, 188, 212, 0.3);
+}
+
+.role-icon  { font-size: 1.5rem; }
+.role-name  { font-size: 0.85rem; font-weight: 700; color: #f1c40f; }
+.role-desc  { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+
+/* Alerts */
+.alert-glass {
+  border-radius: 0.75rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.88rem;
+}
+
+.alert-danger-glass {
+  background: rgba(220, 53, 69, 0.2);
+  border: 1px solid rgba(220, 53, 69, 0.4);
+  color: #ff6b6b;
+}
+
+.alert-success-glass {
+  background: rgba(25, 135, 84, 0.2);
+  border: 1px solid rgba(25, 135, 84, 0.4);
+  color: #51cf66;
+}
+
+.glass-button {
+  background: linear-gradient(135deg, #00bcd4, #2196f3);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.9rem;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease;
 }
 
 .glass-button:hover {
-  background: linear-gradient(to right, #2196f3, #00bcd4);
+  background: linear-gradient(135deg, #2196f3, #00bcd4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 188, 212, 0.4);
 }
 
-/* Link Button */
-.glass-button-sm {
-  margin-top: 0.5rem;
-  background-color: transparent;
-  border: none;
+.glass-link-btn {
   color: #00bcd4;
-  font-weight: bold;
-  padding: 0.3rem;
-  border-radius: 0.4rem;
-  cursor: pointer;
-  transition: color 0.3s ease;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: color 0.3s;
 }
 
-.glass-button-sm:hover {
-  color: #f1c40f;
-  text-decoration: underline;
+.glass-link-btn:hover { color: #f1c40f; text-decoration: underline; }
+
+.text-muted-light {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.88rem;
+}
+
+@media (max-width: 400px) {
+  .role-grid { grid-template-columns: 1fr; }
 }
