@@ -14,54 +14,52 @@ import { QuizDTO, QuizStatsDTO } from '../../models/admin-dtos';
 })
 export class CreatorQuizDetailsComponent implements OnInit {
 
-  quizTitle = '';
-  quiz: QuizDTO | null = null;
-  questionTitles: string[] = [];
-  stats: QuizStatsDTO | null = null;
-  errorMessage = '';
-  allQuizTitles: string[] = [];
+  quizTitle      = '';
+  quiz: QuizDTO | null         = null;
+  questionTitles: string[]     = [];
+  stats: QuizStatsDTO | null   = null;
+  errorMessage   = '';
+  allQuizTitles: string[]      = [];
   selectedQuizTitle = '';
-  searchText = '';
+  searchText     = '';
 
   constructor(
-    private route: ActivatedRoute,
+    private route:        ActivatedRoute,
     private adminService: AdminServiceService,
-    private router: Router
+    private router:       Router
   ) {}
 
   ngOnInit(): void {
+    // Populate dropdown
     this.adminService.getAllQuizTitles().subscribe({
       next:  titles => this.allQuizTitles = titles,
-      error: ()     => this.errorMessage  = 'Could not fetch quiz titles.'
+      error: ()     => {} // non-critical
     });
 
+    // Load from route param
     this.quizTitle = this.route.snapshot.paramMap.get('quizTitle') || '';
-    if (this.quizTitle) {
-      this.fetchQuizDetails(this.quizTitle);
-    }
+    if (this.quizTitle) this.fetchQuizDetails(this.quizTitle);
   }
 
   fetchQuizDetails(title: string): void {
-    this.errorMessage = '';
-    this.quiz = null;
+    this.errorMessage   = '';
+    this.quiz           = null;
     this.questionTitles = [];
-    this.stats = null;
+    this.stats          = null;
 
     this.adminService.getQuizByQuizTitle(title).subscribe({
       next: quiz => {
-        this.quiz = quiz;
+        this.quiz      = quiz;
         this.quizTitle = quiz.title;
 
-        // fetch question titles
         this.adminService.getQuestionTitlesOfQuiz(quiz.id).subscribe({
           next: titles => this.questionTitles = titles,
           error: ()    => this.questionTitles = []
         });
 
-        // fetch stats
         this.adminService.getQuizStats(quiz.id).subscribe({
-          next: stats => this.stats = stats,
-          error: ()   => this.stats = null
+          next:  stats => this.stats = stats,
+          error: ()    => this.stats = null
         });
       },
       error: err => {
@@ -71,8 +69,8 @@ export class CreatorQuizDetailsComponent implements OnInit {
   }
 
   onSearch(): void {
-    const trimmed = this.searchText.trim();
-    if (trimmed) this.fetchQuizDetails(trimmed);
+    const t = this.searchText.trim();
+    if (t) this.fetchQuizDetails(t);
   }
 
   onDropdownSelect(title: string): void {
@@ -81,8 +79,6 @@ export class CreatorQuizDetailsComponent implements OnInit {
   }
 
   goToAllResults(): void {
-    if (this.quiz) {
-      this.router.navigate(['/admin/results/all', this.quiz.id]);
-    }
+    if (this.quiz) this.router.navigate(['/admin/results/all', this.quiz.id]);
   }
 }

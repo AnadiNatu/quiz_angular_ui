@@ -22,10 +22,9 @@ export class AppComponent implements OnInit {
 
   currentBackground: string = this.backgroundImages[0];
   private index = 0;
-  private intervalId: any;
 
   ngOnInit(): void {
-    this.intervalId = setInterval(() => {
+    setInterval(() => {
       this.index = (this.index + 1) % this.backgroundImages.length;
       this.currentBackground = this.backgroundImages[this.index];
     }, 4000);

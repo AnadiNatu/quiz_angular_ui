@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   QuestionResponseDTO, QuizSubmitRequest,
   ResponseDTO, QuizResultDTO, ResultDTO
@@ -7,90 +7,91 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AdminServiceService } from '../../services/admin-service.service';
 import { UserStorageService } from '../../../auth/services/user-storage/user-storage.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-participant-quiz',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, FormsModule, DecimalPipe, DatePipe],
   templateUrl: './participant-quiz.component.html',
   styleUrl: './participant-quiz.component.css'
 })
-export class ParticipantQuizComponent implements OnInit {
+export class ParticipantQuizComponent implements OnInit, OnDestroy {
 
-  // quiz selection
+  // Selection state
   allQuizzes: { id: number; title: string }[] = [];
   selectedQuizId = 0;
-  searchText = '';
-  showSearch = true;
+  searchText     = '';
+  showSearch     = true;
 
-  // quiz state
-  quizId = 0;
+  // Quiz state
+  quizId    = 0;
   quizTitle = '';
   questions: QuestionResponseDTO[] = [];
   responseForm!: FormGroup;
 
-  // timer
-  timer = 5;
+  // Timer
+  timer     = 5;
   showTimer = false;
   private timerInterval: any;
 
-  // result state
-  submitted = false;
-  resultSummary: ResultDTO | null = null;
-  currentResult: QuizResultDTO | null = null;
+  // Result state
+  submitted      = false;
+  resultSummary: ResultDTO | null       = null;
+  detailedResult: QuizResultDTO | null  = null;
 
-  // errors
+  // Errors
   errorMessage = '';
 
   constructor(
-    private route: ActivatedRoute,
+    private route:        ActivatedRoute,
     private adminService: AdminServiceService,
-    private userStorage: UserStorageService,
-    private fb: FormBuilder,
-    private router: Router
+    private storage:      UserStorageService,
+    private fb:           FormBuilder,
+    private router:       Router
   ) {}
 
   ngOnInit(): void {
-    if (!this.userStorage.getToken()) {
+    if (!this.storage.getToken()) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // Load all quizzes for dropdown
+    // Load quiz list for dropdown
     this.adminService.getAllQuizzesByCreator().subscribe({
-      next: quizzes => {
-        this.allQuizzes = quizzes.map(q => ({ id: q.id, title: q.title }));
-      },
-      error: () => this.errorMessage = 'Failed to load quizzes.'
+      next:  qs => this.allQuizzes = qs.map(q => ({ id: q.id, title: q.title })),
+      error: ()  => {}
     });
 
-    // Route param is quiz id
-    const paramId = this.route.snapshot.paramMap.get('quizTitle');
+    // If launched with a quiz ID in route
+    const paramId = this.route.snapshot.paramMap.get('quizId');
     if (paramId && !isNaN(Number(paramId))) {
       this.startQuizTimer(Number(paramId));
     }
   }
 
+  ngOnDestroy(): void {
+    if (this.timerInterval) clearInterval(this.timerInterval);
+  }
+
   onSearch(): void {
-    const title = this.searchText.trim();
-    if (!title) return;
-    this.adminService.getQuizByQuizTitle(title).subscribe({
-      next: quiz => this.startQuizTimer(quiz.id),
-      error: () => this.errorMessage = 'Quiz not found.'
+    const text = this.searchText.trim();
+    if (!text) return;
+
+    this.adminService.getQuizByQuizTitle(text).subscribe({
+      next:  quiz => this.startQuizTimer(quiz.id),
+      error: ()   => this.errorMessage = 'Quiz not found.'
     });
   }
 
   onDropdownSelect(): void {
-    if (this.selectedQuizId) {
-      this.startQuizTimer(this.selectedQuizId);
-    }
+    if (this.selectedQuizId) this.startQuizTimer(this.selectedQuizId);
   }
 
   startQuizTimer(id: number): void {
-    this.quizId   = id;
-    this.showTimer = true;
-    this.timer     = 5;
+    this.quizId       = id;
+    this.showTimer    = true;
+    this.timer        = 5;
     this.errorMessage = '';
 
     if (this.timerInterval) clearInterval(this.timerInterval);
@@ -109,30 +110,27 @@ export class ParticipantQuizComponent implements OnInit {
   loadQuiz(id: number): void {
     this.adminService.startQuiz(id).subscribe({
       next: questions => {
-        this.questions      = questions;
-        this.quizTitle      = questions[0]?.questionTitle ? '' : '';
-        this.submitted      = false;
-        this.resultSummary  = null;
-        this.currentResult  = null;
+        this.questions     = questions;
+        this.submitted     = false;
+        this.resultSummary = null;
+        this.detailedResult = null;
 
-        // get title from our list
         const found = this.allQuizzes.find(q => q.id === id);
         if (found) this.quizTitle = found.title;
 
         this.buildForm();
       },
       error: err => {
-        this.errorMessage = err?.error?.message || 'Failed to start quiz. You may have already taken it.';
+        this.errorMessage = err?.error?.message
+          || 'Failed to start quiz. You may have already taken it.';
         this.showSearch = true;
       }
     });
   }
 
   buildForm(): void {
-    const group: { [key: string]: any } = {};
-    this.questions.forEach(q => {
-      group[q.id.toString()] = [null];
-    });
+    const group: { [key: number]: any } = {};
+    this.questions.forEach(q => { group[q.id] = [null]; });
     this.responseForm = this.fb.group(group);
   }
 
@@ -144,12 +142,10 @@ export class ParticipantQuizComponent implements OnInit {
       selectedAnswer: raw[q.id] ?? null
     }));
 
-    const userId = this.userStorage.getUserId() ?? 0;
-
     const request: QuizSubmitRequest = {
       quizId:    this.quizId,
-      userId:    userId,
-      responses: responses
+      userId:    this.storage.getUserId() ?? 0,
+      responses
     };
 
     this.adminService.submitQuiz(request).subscribe({
@@ -163,35 +159,37 @@ export class ParticipantQuizComponent implements OnInit {
     });
   }
 
-  viewFullResults(): void {
+  loadDetailedResult(): void {
     this.adminService.getUserResults().subscribe({
       next: results => {
-        const found = results.find(r => r.quizId === this.quizId);
-        if (found) this.currentResult = found;
+        this.detailedResult =
+          results.find(r => r.quizId === this.quizId) ?? null;
       },
       error: () => this.errorMessage = 'Could not fetch detailed results.'
     });
   }
 
-  viewReportCard(): void {
-    const userId = this.userStorage.getUserId() ?? 0;
+  openReportCard(): void {
+    const userId = this.storage.getUserId() ?? 0;
     this.adminService.getParticipantReportDocument(userId).subscribe({
       next: html => {
         const w = window.open('', '_blank');
         w?.document.write(html);
         w?.document.close();
       },
-      error: () => alert('Failed to load report card.')
+      error: () => alert('Failed to open report card.')
     });
   }
 
-  retakeSearch(): void {
-    this.showSearch    = true;
-    this.questions     = [];
-    this.submitted     = false;
-    this.resultSummary = null;
-    this.currentResult = null;
-    this.errorMessage  = '';
-    this.quizTitle     = '';
+  reset(): void {
+    this.showSearch     = true;
+    this.questions      = [];
+    this.submitted      = false;
+    this.resultSummary  = null;
+    this.detailedResult = null;
+    this.errorMessage   = '';
+    this.quizTitle      = '';
+    this.selectedQuizId = 0;
+    this.searchText     = '';
   }
 }

@@ -19,16 +19,18 @@ import { UserStorageService } from '../../../auth/services/user-storage/user-sto
 export class CreateQuizComponent implements OnInit {
 
   quizForm!: FormGroup;
-  availableQuestions = 0;
-  maxQuestions = 0;
-  questionOptions: number[] = [];
-  categories: string[] = [];
+  categories:         string[] = [];
+  questionOptions:    number[] = [];
+  availableQuestions  = 0;
+  maxQuestions        = 0;
+  successMessage      = '';
+  errorMessage        = '';
 
   constructor(
-    private fb: FormBuilder,
+    private fb:           FormBuilder,
     private adminService: AdminServiceService,
-    private router: Router,
-    private storage: UserStorageService
+    private router:       Router,
+    private storage:      UserStorageService
   ) {}
 
   ngOnInit(): void {
@@ -36,62 +38,38 @@ export class CreateQuizComponent implements OnInit {
       title:             ['', Validators.required],
       category:          ['', Validators.required],
       difficultyLevel:   ['', Validators.required],
-      numberOfQuestions: [1,  [Validators.required, Validators.min(1)]]
+      numberOfQuestions: [1, [Validators.required, Validators.min(1)]]
     });
 
-    this.loadCategories();
-  }
-
-  loadCategories(): void {
     this.adminService.getAllCategories().subscribe({
-      next:  data  => this.categories = data,
-      error: ()    => alert('❌ Failed to load categories.')
+      next:  cats  => this.categories = cats,
+      error: ()    => this.categories = []
     });
   }
 
   onCategoryChange(): void {
-    const category = this.quizForm.get('category')?.value;
-    if (category) {
-      this.adminService.getQuestionCountByCategory(category).subscribe({
-        next: count => {
-          this.availableQuestions = count;
-          this.maxQuestions = count;
-          this.populateQuestionOptions();
-        },
-        error: () => {
-          this.availableQuestions = 0;
-          this.maxQuestions = 0;
-          this.questionOptions = [];
-        }
-      });
-    }
+    const cat = this.quizForm.get('category')?.value;
+    if (!cat) return;
+
+    this.adminService.getQuestionCountByCategory(cat).subscribe({
+      next:  n  => { this.availableQuestions = n; this.maxQuestions = n; this.buildOptions(); },
+      error: () => { this.availableQuestions = 0; this.maxQuestions = 0; this.questionOptions = []; }
+    });
   }
 
   onDifficultyChange(): void {
-    const category    = this.quizForm.get('category')?.value;
-    const difficulty  = this.quizForm.get('difficultyLevel')?.value;
-    if (category && difficulty) {
-      this.adminService
-          .getQuestionCountByCategoryAndDifficulty(category, difficulty)
-          .subscribe({
-            next: count => {
-              this.availableQuestions = count;
-              this.maxQuestions = count;
-              this.populateQuestionOptions();
-            },
-            error: () => {
-              this.availableQuestions = 0;
-              this.maxQuestions = 0;
-              this.questionOptions = [];
-            }
-          });
-    }
+    const cat  = this.quizForm.get('category')?.value;
+    const diff = this.quizForm.get('difficultyLevel')?.value;
+    if (!cat || !diff) return;
+
+    this.adminService.getQuestionCountByCategoryAndDifficulty(cat, diff).subscribe({
+      next:  n  => { this.availableQuestions = n; this.maxQuestions = n; this.buildOptions(); },
+      error: () => { this.availableQuestions = 0; this.maxQuestions = 0; this.questionOptions = []; }
+    });
   }
 
-  populateQuestionOptions(): void {
-    this.questionOptions = Array.from(
-      { length: this.maxQuestions }, (_, i) => i + 1
-    );
+  buildOptions(): void {
+    this.questionOptions = Array.from({ length: this.maxQuestions }, (_, i) => i + 1);
   }
 
   setMaxQuestions(): void {
@@ -101,25 +79,33 @@ export class CreateQuizComponent implements OnInit {
   createQuiz(): void {
     if (this.quizForm.invalid) return;
 
+    const fv     = this.quizForm.value;
     const userId = this.storage.getUserId() ?? 0;
-    const formVal = this.quizForm.value;
 
     const dto: CreateQuizDTO = {
-      title:             formVal.title,
-      category:          formVal.category,
-      difficultyLevel:   formVal.difficultyLevel,
-      numberOfQuestions: Number(formVal.numberOfQuestions),
+      title:             fv.title,
+      category:          fv.category,
+      difficultyLevel:   fv.difficultyLevel,
+      numberOfQuestions: Number(fv.numberOfQuestions),
       createdByUserId:   userId
     };
 
     this.adminService.createQuiz(dto).subscribe({
       next: res => {
-        alert('✅ Quiz created successfully!');
+        this.successMessage = `✅ Quiz "${res.title}" created!`;
+        this.errorMessage   = '';
         this.quizForm.reset();
-        this.router.navigate(['/admin/creator/quiz-detail', res.title]);
+        this.availableQuestions = 0;
+        this.maxQuestions       = 0;
+        this.questionOptions    = [];
+        setTimeout(() =>
+          this.router.navigate(['/admin/creator/quiz-detail', res.title]), 1200
+        );
       },
-      error: err =>
-        alert('❌ Error: ' + (err?.error?.message || 'Server Error'))
+      error: err => {
+        this.errorMessage   = '❌ ' + (err?.error?.message || 'Could not create quiz.');
+        this.successMessage = '';
+      }
     });
   }
 }

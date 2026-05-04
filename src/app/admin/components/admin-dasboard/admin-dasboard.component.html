@@ -1,41 +1,65 @@
-<!-- Navbar -->
+<!-- Sticky Navbar -->
 <nav class="glass-navbar">
   <div class="nav-left">
-    <a class="brand" (click)="toggleAdminCard()">
-      {{ userRole }} Panel
-    </a>
+    <span class="brand" (click)="toggleAdminCard()">
+      {{ userRole }} Panel ▾
+    </span>
   </div>
 
-  <div class="nav-toggle" (click)="toggleMenu = !toggleMenu">&#9776;</div>
+  <button class="nav-toggle" (click)="toggleMenu = !toggleMenu"
+          aria-label="Toggle menu">&#9776;</button>
 
   <div class="nav-right" [class.open]="toggleMenu">
     <a routerLink="/admin"
        routerLinkActive="active-link"
-       [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
-    <a routerLink="/admin/create-quiz" routerLinkActive="active-link">Create Quiz</a>
-    <a routerLink="/admin/create-question" routerLinkActive="active-link">Create Question</a>
-    <a routerLink="/admin/all/quizzes" routerLinkActive="active-link">All Quizzes</a>
-    <a routerLink="/admin/creator/quizzes" routerLinkActive="active-link">My Quizzes</a>
-    <a routerLink="/admin/participant/quiz" routerLinkActive="active-link">Take Quiz</a>
-    <a routerLink="/admin/participant/result/0" routerLinkActive="active-link">My Results</a>
+       [routerLinkActiveOptions]="{ exact: true }"
+       (click)="toggleMenu = false">Dashboard</a>
+
+    <a routerLink="/admin/create-quiz"
+       routerLinkActive="active-link"
+       (click)="toggleMenu = false">Create Quiz</a>
+
+    <a routerLink="/admin/create-question"
+       routerLinkActive="active-link"
+       (click)="toggleMenu = false">Create Question</a>
+
+    <a routerLink="/admin/all/quizzes"
+       routerLinkActive="active-link"
+       (click)="toggleMenu = false">All Quizzes</a>
+
+    <a routerLink="/admin/creator/quizzes"
+       routerLinkActive="active-link"
+       (click)="toggleMenu = false">My Quizzes</a>
+
+    <a routerLink="/admin/participant/quiz"
+       routerLinkActive="active-link"
+       (click)="toggleMenu = false">Take Quiz</a>
+
+    <a routerLink="/admin/participant/result"
+       routerLinkActive="active-link"
+       (click)="toggleMenu = false">My Results</a>
+
     <a href="#" (click)="logout(); $event.preventDefault()">Log Out</a>
   </div>
 </nav>
 
-<!-- User Info Card -->
-<div *ngIf="showAdminCard" class="glass-card admin-info-card mt-2">
-  <h4>User Info</h4>
-  <ng-container *ngIf="userDetails">
+<!-- User Info Dropdown Card -->
+<div *ngIf="showAdminCard" class="glass-card admin-info-card">
+  <h4>Account Info</h4>
+  <ng-container *ngIf="userDetails; else loadingUser">
     <p><strong>Username:</strong> {{ userDetails.username }}</p>
-    <p><strong>Email:</strong>    {{ userDetails.email }}</p>
-    <p><strong>Role:</strong>     {{ userDetails.role }}</p>
-    <p><strong>Active:</strong>   {{ userDetails.enabled ? 'Yes' : 'No' }}</p>
+    <p><strong>Email:</strong>    {{ userDetails.email    }}</p>
+    <p><strong>Role:</strong>     {{ userDetails.role     }}</p>
+    <p><strong>Active:</strong>   {{ userDetails.enabled ? '✅ Yes' : '❌ No' }}</p>
   </ng-container>
-  <button class="glass-button-sm mt-2" (click)="toggleAdminCard()">Close</button>
+  <ng-template #loadingUser>
+    <p class="text-muted-sm">Loading...</p>
+  </ng-template>
+  <button class="glass-button-sm mt-2" (click)="toggleAdminCard()">Close ✕</button>
 </div>
 
-<!-- Greeting -->
-<div class="dashboard-header text-center mt-4 mb-3">
+<!-- Greeting Banner -->
+<div class="dashboard-header text-center">
   <h1>Welcome, {{ username }} 👋</h1>
   <p>Manage quizzes, view results, and create questions from here.</p>
 </div>
@@ -45,12 +69,13 @@
 
   <!-- Profile Card -->
   <div class="glass-card profile-card text-center">
-    <img [src]="profileImageUrl" alt="Profile" class="profile-avatar" />
+    <img [src]="profileImageUrl" alt="Profile Photo" class="profile-avatar" />
     <h3>{{ username }}</h3>
-    <p class="text-muted">{{ userRole }}</p>
+    <p class="role-badge-text">{{ userRole }}</p>
     <label class="upload-btn">
-      Change Photo
-      <input type="file" (change)="uploadProfilePhoto($event)" hidden />
+      📷 Change Photo
+      <input type="file" accept="image/*"
+             (change)="uploadProfilePhoto($event)" hidden />
     </label>
   </div>
 
@@ -65,22 +90,33 @@
     </div>
   </div>
 
-  <!-- Taken Quizzes -->
-  <div class="glass-card">
+  <!-- Taken Quizzes (PARTICIPANT only) -->
+  <div class="glass-card" *ngIf="userRole === 'PARTICIPANT'">
     <h3>Quizzes You've Taken</h3>
-    <ul class="taken-quiz-list list-unstyled">
+    <ul class="taken-quiz-list">
       <li *ngFor="let title of takenQuizTitles"
-          class="d-flex justify-content-between align-items-center mb-2">
+          class="taken-quiz-item">
         <span>{{ title }}</span>
         <button class="glass-button-sm"
-                (click)="viewParticipantResult(title)">
-          View Result
+                (click)="viewParticipantResult()">
+          View Results
         </button>
       </li>
-      <li *ngIf="takenQuizTitles.length === 0" class="text-muted">
+      <li *ngIf="takenQuizTitles.length === 0" class="text-muted-sm">
         No quizzes taken yet.
       </li>
     </ul>
+  </div>
+
+  <!-- Quick Links (ADMIN/CURATOR) -->
+  <div class="glass-card" *ngIf="userRole !== 'PARTICIPANT'">
+    <h3>Quick Actions</h3>
+    <div class="quick-links">
+      <a routerLink="/admin/create-quiz"     class="quick-link-btn">➕ New Quiz</a>
+      <a routerLink="/admin/create-question" class="quick-link-btn">➕ New Question</a>
+      <a routerLink="/admin/all/quizzes"     class="quick-link-btn">📋 All Quizzes</a>
+      <a routerLink="/admin/creator/quizzes" class="quick-link-btn">📂 My Quizzes</a>
+    </div>
   </div>
 
 </div>

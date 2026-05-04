@@ -43,9 +43,9 @@ export const adminRoutes: Routes = [
       import('./components/creator-quiz-details/creator-quiz-details.component')
         .then(m => m.CreatorQuizDetailsComponent)
   },
-  // quizTitle param here carries the quiz ID for microservice routing
   {
-    path: 'participant/quiz/:quizTitle',
+    // :quizId is a numeric quiz ID for the microservice
+    path: 'participant/quiz/:quizId',
     loadComponent: () =>
       import('./components/participant-quiz/participant-quiz.component')
         .then(m => m.ParticipantQuizComponent)
@@ -57,14 +57,14 @@ export const adminRoutes: Routes = [
         .then(m => m.ParticipantQuizComponent)
   },
   {
-    path: 'participant/result/:quizTitle',
+    path: 'participant/result',
     loadComponent: () =>
       import('./components/quiz-result/quiz-result.component')
         .then(m => m.QuizResultComponent)
   },
-  // quizTitle param carries quiz ID
   {
-    path: 'results/all/:quizTitle',
+    // :quizId is numeric quiz ID
+    path: 'results/all/:quizId',
     loadComponent: () =>
       import('./components/all-user-result/all-user-result.component')
         .then(m => m.AllUserResultComponent)

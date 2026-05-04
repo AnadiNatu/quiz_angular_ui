@@ -1,28 +1,18 @@
-/* ── Background ───────────────────────────────────────── */
 .background-wrapper {
-  position: fixed;
-  inset: 0;                       /* top/right/bottom/left: 0 */
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  z-index: -1;
-  transition: background-image 1.5s ease-in-out;
+  position: relative;
 }
 
-/* ── Overlay ──────────────────────────────────────────── */
-/*
-  This is the ONLY wrapper around router-outlet.
-  It must NOT constrain height or use flex centering —
-  those belong inside each individual component.
-  It just provides the dark tint on top of the background.
-*/
 .content-overlay {
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.28);
-  /* NO display:flex, NO justify-content, NO align-items here */
-  /* Each routed component manages its own layout */
 }

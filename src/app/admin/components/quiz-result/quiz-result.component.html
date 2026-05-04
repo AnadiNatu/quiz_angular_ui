@@ -1,51 +1,64 @@
 <div class="result-wrapper">
 
+  <!-- Error -->
   <div *ngIf="hasError" class="error-message">
-    ⚠️ Error loading results. Please try again later.
+    ⚠️ Error loading results. Please try again.
+    <br/>
+    <button class="btn-back mt-2" (click)="goBack()">← Dashboard</button>
   </div>
 
-  <ng-container *ngIf="isLoaded && !hasError">
+  <!-- Loading -->
+  <div *ngIf="!isLoaded && !hasError" class="text-center">
+    <div class="spinner-border" role="status"></div>
+    <p>Loading your results...</p>
+  </div>
 
-    <div *ngIf="results.length === 0" class="glass-card text-center">
-      <p>You haven't taken any quizzes yet.</p>
-    </div>
+  <!-- No results -->
+  <div *ngIf="isLoaded && !hasError && results.length === 0"
+       class="glass-card text-center">
+    <p>You haven't taken any quizzes yet.</p>
+    <button class="btn-back mt-2" (click)="goBack()">← Dashboard</button>
+  </div>
 
-    <div *ngFor="let result of results" class="glass-card animate-fade-in mb-4">
-      <h2 class="quiz-title">{{ result.quizTitle }}</h2>
+  <!-- Result Cards -->
+  <ng-container *ngIf="isLoaded && !hasError && results.length > 0">
+
+    <div *ngFor="let r of results" class="glass-card">
+      <h2 class="quiz-title">{{ r.quizTitle }}</h2>
+
       <div class="quiz-details">
-        <p><strong>Category:</strong> {{ result.category }}</p>
-        <p><strong>Difficulty:</strong> {{ result.difficultyLevel }}</p>
-        <p><strong>Curator:</strong> {{ result.curatorUsername }}</p>
-        <p><strong>Total Questions:</strong> {{ result.totalQuestions }}</p>
+        <p><strong>Category:</strong>   {{ r.category }}</p>
+        <p><strong>Difficulty:</strong> {{ r.difficultyLevel }}</p>
+        <p><strong>Curator:</strong>    {{ r.curatorUsername }}</p>
+        <p><strong>Total Q:</strong>    {{ r.totalQuestions }}</p>
         <p class="correct">
-          <strong>Correct:</strong> {{ result.correctAnswers }}
+          <strong>Correct:</strong> {{ r.correctAnswers }}
         </p>
         <p class="incorrect">
-          <strong>Incorrect:</strong> {{ result.incorrectAnswers }}
+          <strong>Incorrect:</strong> {{ r.incorrectAnswers }}
         </p>
         <p>
-          <strong>Score:</strong>
-          {{ result.percentage | number:'1.1-1' }}%
+          <strong>Score:</strong> {{ r.percentage | number:'1.1-1' }}%
         </p>
         <p>
           <strong>Status:</strong>
-          <span [class.correct]="result.percentage >= 60"
-                [class.incorrect]="result.percentage < 60">
-            {{ result.percentage >= 60 ? 'PASSED ✅' : 'FAILED ❌' }}
+          <span [class.correct]="r.percentage >= 60"
+                [class.incorrect]="r.percentage < 60">
+            {{ r.percentage >= 60 ? 'PASSED ✅' : 'FAILED ❌' }}
           </span>
         </p>
         <p>
           <strong>Taken At:</strong>
-          {{ result.takenAt | date:'dd MMM yyyy, hh:mm a' }}
+          {{ r.takenAt | date:'dd MMM yyyy, hh:mm a' }}
         </p>
       </div>
     </div>
 
-    <div class="text-center mt-3 d-flex gap-3 justify-content-center flex-wrap">
-      <button class="btn btn-outline-info" (click)="viewReportCard()">
+    <div class="action-row mt-3">
+      <button class="btn-action" (click)="openReportCard()">
         🖨️ Print Report Card
       </button>
-      <button class="btn btn-secondary" (click)="goBack()">
+      <button class="btn-back" (click)="goBack()">
         ← Dashboard
       </button>
     </div>

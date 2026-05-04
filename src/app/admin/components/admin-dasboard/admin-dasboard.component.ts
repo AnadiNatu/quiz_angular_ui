@@ -18,60 +18,70 @@ import { QuizDTO } from '../../models/admin-dtos';
 export class AdminDasboardComponent implements OnInit {
 
   takenQuizTitles: string[] = [];
-  username = '';
-  userRole = '';
-  showAdminCard = false;
+  username    = '';
+  userRole    = '';
+  showAdminCard  = false;
   profileImageUrl = 'assets/default-profile.png';
   userDetails: UsersDTO | null = null;
-  toggleMenu = false;
+  toggleMenu  = false;
 
   constructor(
     private adminService: AdminServiceService,
-    private authService: AuthService,
-    public storage: UserStorageService,
-    private router: Router
+    private authService:  AuthService,
+    public  storage:      UserStorageService,
+    private router:       Router
   ) {}
 
   ngOnInit(): void {
     const user = this.storage.getUser();
     this.username = user?.username ?? 'User';
-    this.userRole = user?.role ?? '';
+    this.userRole = user?.role     ?? '';
 
-    // Load quizzes taken by participant
-    this.adminService.getAllTakenQuizTitles().subscribe({
-      next: titles => this.takenQuizTitles = titles,
-      error: err   => console.error('Failed to fetch taken quizzes', err)
-    });
+    // Only participants have taken-quiz titles;
+    // for ADMIN/CURATOR we skip this call to avoid a 403
+    if (this.userRole === 'PARTICIPANT') {
+      this.adminService.getAllTakenQuizTitles().subscribe({
+        next: titles => this.takenQuizTitles = titles,
+        error: err   => console.warn('Could not load taken quizzes:', err)
+      });
+    }
 
-    // Load full user details
+    // Load enriched user details from auth service
     this.adminService.getUserDetails().subscribe({
       next: res => {
         this.userDetails = res;
+        // only update avatar if the server returns a profile picture
+        if (res.profilePicture) {
+          this.profileImageUrl = res.profilePicture;
+        }
       },
-      error: err => console.error('Failed to load user details:', err)
+      error: err => console.warn('Could not load user details:', err)
     });
   }
 
-  uploadProfilePhoto(event: any): void {
-    const file: File = event.target.files[0];
+  uploadProfilePhoto(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file  = input.files?.[0];
     if (file && this.username) {
       this.authService.uploadProfilePhoto(this.username, file).subscribe({
         next: url  => this.profileImageUrl = url,
-        error: err => console.error('Error uploading image:', err)
+        error: err => console.error('Upload failed:', err)
       });
     }
   }
 
+  // Called by CreatorQuizListComponent (viewQuiz) output — emits QuizDTO
   viewCreatedQuiz(quiz: QuizDTO): void {
     this.router.navigate(['/admin/quiz/view', quiz.title]);
   }
 
+  // Called by CreatorQuizListComponent (viewAllResults) output — emits QuizDTO
   viewAllResultsForQuiz(quiz: QuizDTO): void {
     this.router.navigate(['/admin/results/all', quiz.id]);
   }
 
-  viewParticipantResult(title: string): void {
-    this.router.navigate(['/admin/participant/result', title]);
+  viewParticipantResult(): void {
+    this.router.navigate(['/admin/participant/result']);
   }
 
   toggleAdminCard(): void {

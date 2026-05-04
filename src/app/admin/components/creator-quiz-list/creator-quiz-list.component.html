@@ -1,29 +1,31 @@
 <div class="quiz-list-container">
 
-  <div *ngIf="showAllQuizzes" class="mb-4">
-    <input type="text" class="form-control"
+  <div *ngIf="showAllQuizzes" class="search-row mb-3">
+    <input type="text"
+           class="form-control"
            [(ngModel)]="searchText"
            placeholder="Search quizzes by title..." />
-    <button class="btn btn-primary mt-2" (click)="onSearch()">Search</button>
+    <button class="glass-button search-btn" (click)="onSearch()">Search</button>
   </div>
 
-  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="errorMessage" class="alert-danger">{{ errorMessage }}</div>
 
-  <ng-container *ngIf="quizzes.length > 0; else empty">
+  <ng-container *ngIf="quizzes.length > 0; else emptyState">
     <div class="quiz-card"
          *ngFor="let quiz of quizzes"
-         (mouseenter)="hovered = quiz.id"
-         (mouseleave)="hovered = 0"
-         [class.expanded]="hovered === quiz.id">
+         (mouseenter)="hoveredId = quiz.id"
+         (mouseleave)="hoveredId = 0"
+         [class.expanded]="hoveredId === quiz.id">
 
       <h4>{{ quiz.title }}</h4>
 
       <div class="quiz-details">
-        <p><strong>Category:</strong> {{ quiz.category }}</p>
-        <p><strong>Difficulty:</strong> {{ quiz.difficultyLevel }}</p>
-        <p><strong>Creator:</strong> {{ quiz.creatorUsername }}</p>
-        <p><strong>Questions:</strong> {{ quiz.questionIds?.length ?? 0 }}</p>
-        <p><strong>Participants:</strong> {{ quiz.participantIds?.length ?? 0 }}</p>
+        <p><strong>Category:</strong>    {{ quiz.category }}</p>
+        <p><strong>Difficulty:</strong>  {{ quiz.difficultyLevel }}</p>
+        <p><strong>Creator:</strong>     {{ quiz.creatorUsername }}</p>
+        <p><strong>Questions:</strong>   {{ quiz.questionIds?.length ?? 0 }}</p>
+        <p><strong>Participants:</strong>{{ quiz.participantIds?.length ?? 0 }}</p>
+
         <div class="card-buttons">
           <button class="glass-button"
                   (click)="viewQuizDetails(quiz); $event.stopPropagation()">
@@ -35,16 +37,15 @@
           </button>
           <button class="glass-button alt"
                   (click)="onViewResults(quiz); $event.stopPropagation()">
-            See Results
+            Results
           </button>
         </div>
       </div>
     </div>
   </ng-container>
 
-  <ng-template #empty>
-    <div *ngIf="!errorMessage" class="text-center text-muted mt-5">
-      <p>No quizzes found.</p>
-    </div>
+  <ng-template #emptyState>
+    <p *ngIf="!errorMessage" class="empty-msg">No quizzes found.</p>
   </ng-template>
+
 </div>

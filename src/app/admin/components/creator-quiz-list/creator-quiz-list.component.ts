@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { QuizDTO } from '../../models/admin-dtos';
 import { AdminServiceService } from '../../services/admin-service.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -14,24 +14,23 @@ import { FormsModule } from '@angular/forms';
 })
 export class CreatorQuizListComponent implements OnInit {
 
-  quizzes: QuizDTO[] = [];
-  errorMessage = '';
-  hovered = 0;           // store quiz id instead of title
-  searchText = '';
+  quizzes:      QuizDTO[] = [];
+  errorMessage  = '';
+  hoveredId     = 0;
+  searchText    = '';
   showAllQuizzes = false;
 
-  @Output() viewQuiz = new EventEmitter<QuizDTO>();
+  // Emit full QuizDTO so parent gets id + title
+  @Output() viewQuiz       = new EventEmitter<QuizDTO>();
   @Output() viewAllResults = new EventEmitter<QuizDTO>();
 
   constructor(
     private adminService: AdminServiceService,
-    private router: Router,
-    private route: ActivatedRoute
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    const currentPath = this.router.url;
-    this.showAllQuizzes = currentPath.includes('all/quizzes');
+    this.showAllQuizzes = this.router.url.includes('all/quizzes');
     this.loadQuizzes();
   }
 
@@ -41,16 +40,14 @@ export class CreatorQuizListComponent implements OnInit {
       : this.adminService.getAllQuizzesByCreator();
 
     src$.subscribe({
-      next:  res  => this.quizzes = res,
-      error: err  => this.errorMessage = err?.error?.message || 'Could not load quizzes'
+      next:  res => this.quizzes = res,
+      error: err => this.errorMessage = err?.error?.message || 'Could not load quizzes'
     });
   }
 
   onSearch(): void {
-    if (!this.searchText.trim()) {
-      this.loadQuizzes();
-      return;
-    }
+    if (!this.searchText.trim()) { this.loadQuizzes(); return; }
+
     this.adminService.getQuizByQuizTitle(this.searchText.trim()).subscribe({
       next:  quiz => this.quizzes = [quiz],
       error: err  => this.errorMessage = err?.error?.message || 'Quiz not found'
@@ -61,15 +58,10 @@ export class CreatorQuizListComponent implements OnInit {
     this.router.navigate(['/admin/creator/quiz-detail', quiz.title]);
   }
 
-  onViewQuiz(quiz: QuizDTO): void {
-    this.viewQuiz.emit(quiz);
-  }
-
-  onViewResults(quiz: QuizDTO): void {
-    this.viewAllResults.emit(quiz);
-  }
-
   takeQuiz(quiz: QuizDTO): void {
     this.router.navigate(['/admin/participant/quiz', quiz.id]);
   }
+
+  onViewQuiz(quiz: QuizDTO):       void { this.viewQuiz.emit(quiz); }
+  onViewResults(quiz: QuizDTO):    void { this.viewAllResults.emit(quiz); }
 }
