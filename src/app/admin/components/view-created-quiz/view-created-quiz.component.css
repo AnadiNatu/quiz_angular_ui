@@ -1,120 +1,114 @@
-/* === Container and Layout === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 .glass-container {
   display: flex;
   justify-content: center;
-  padding: 2rem;
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  align-items: flex-start;
   min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(1.25rem, 3vw, 2rem) 1rem;
+  overflow-y: auto;
 }
 
 .glass-content-wrapper {
   width: 100%;
-  max-width: 900px;
+  max-width: 860px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
-/* === Glass Card Style === */
 .glass-card {
-  background: rgba(0, 0, 0, 0.3);
-  padding: 2rem;
+  background: rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: clamp(1.25rem, 3.5vw, 2rem);
   border-radius: 1rem;
-  color: yellow;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.4);
-  transition: background 0.4s ease, transform 0.2s;
+  color: #f1c40f;
+  box-shadow: 0 6px 28px rgba(31, 38, 135, 0.3);
+  transition: background 0.4s ease, transform 0.25s;
 }
 
 .glass-card:hover {
-  background: rgba(0, 188, 212, 0.2);
-  transform: translateY(-4px);
+  background: rgba(0, 188, 212, 0.15);
+  transform: translateY(-3px);
 }
 
-/* === Scroll Container === */
+.quiz-header h2 {
+  font-size: clamp(1.15rem, 3.5vw, 1.5rem);
+  font-weight: 700;
+  color: #f1c40f;
+  margin-bottom: 0.85rem;
+}
+
+.quiz-header p {
+  margin: 0.35rem 0;
+  font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.quiz-header p strong { color: #00bcd4; }
+
+/* Scroll Container */
 .quiz-scroll-container {
-  max-height: 300px;
+  max-height: clamp(260px, 40vh, 380px);
   overflow-y: auto;
-  padding-right: 0.5rem;
-}
-
-.quiz-scroll-container::-webkit-scrollbar {
-  width: 6px;
-}
-.quiz-scroll-container::-webkit-scrollbar-thumb {
-  background-color: #00bcd4;
-  border-radius: 4px;
-}
-
-/* === Question Card === */
-.question-card {
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 0.8rem;
-}
-
-/* === Buttons === */
-.glass-button {
+  padding-right: 0.4rem;
+  scrollbar-width: thin;
+  scrollbar-color: #00bcd4 transparent;
   margin-top: 1rem;
-  background: linear-gradient(to right, #00bcd4, #2196f3);
+}
+
+.quiz-scroll-container::-webkit-scrollbar { width: 5px; }
+.quiz-scroll-container::-webkit-scrollbar-thumb { background: #00bcd4; border-radius: 4px; }
+
+.quiz-scroll-container h4 {
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  color: #00bcd4;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.question-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  padding: clamp(0.75rem, 2.5vw, 1rem);
+  margin-bottom: 0.85rem;
+}
+
+.question-card p {
+  font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+/* Buttons */
+.glass-button {
+  display: inline-block;
+  padding: 0.65rem 1.35rem;
+  background: linear-gradient(135deg, #00bcd4, #2196f3);
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 1rem;
+  border-radius: 0.85rem;
   color: #fff;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: clamp(0.85rem, 2.2vw, 0.95rem);
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  text-decoration: none;
 }
 
 .glass-button:hover {
-  background: linear-gradient(to right, #2196f3, #00bcd4);
-}
-
-/* === Navbar Styling (from Admin Dashboard) === */
-.glass-navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  background: rgba(173, 216, 230, 0.15);
-  padding: 1rem 2rem;
-  border-radius: 0.8rem;
-  margin-bottom: 1.5rem;
-  backdrop-filter: blur(12px);
-  color: yellow;
-}
-
-.glass-navbar:hover {
-  background: rgba(0, 51, 102, 0.6);
-}
-
-.nav-left .brand {
-  color: #00bcd4;
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.nav-right {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.nav-right a {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.5rem 1rem;
-  border-radius: 0.8rem;
-  text-decoration: none;
-  color: yellow;
-  transition: background 0.3s ease, transform 0.3s ease;
-  backdrop-filter: blur(8px);
-}
-
-.nav-right a:hover,
-.nav-right .active-link {
-  background: rgba(0, 188, 212, 0.4);
-  color: #fff;
+  background: linear-gradient(135deg, #2196f3, #00bcd4);
   transform: translateY(-2px);
-  font-weight: bold;
+  box-shadow: 0 6px 18px rgba(0, 188, 212, 0.4);
 }
+
+.d-flex { display: flex; }
+.gap-3  { gap: 0.85rem; }
+.flex-wrap { flex-wrap: wrap; }
+.mt-4 { margin-top: 1.25rem; }
+.text-muted { color: rgba(255,255,255,0.45); font-size: 0.88rem; }
+.text-danger { color: #ff6b6b; text-align: center; }

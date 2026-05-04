@@ -1,84 +1,133 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 .glass-container {
   display: flex;
   justify-content: center;
-  padding: 2rem;
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  align-items: flex-start;
   min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(1.25rem, 3vw, 2rem) 1rem;
+  overflow-y: auto;
 }
 
 .glass-card {
-  background: rgba(0, 0, 0, 0.3);
-  padding: 2rem;
+  background: rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: clamp(1.5rem, 4vw, 2rem);
   border-radius: 1rem;
   width: 100%;
-  max-width: 600px;
-  color: yellow;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.4);
-  transition: background 0.4s ease, transform 0.2s;
+  max-width: 620px;
+  color: #f1c40f;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.35);
+  margin: auto;
+  transition: background 0.4s ease;
 }
 
-.glass-card:hover {
-  background: rgba(0, 188, 212, 0.2);
-  transform: translateY(-4px);
-}
+.glass-card:hover { background: rgba(0, 188, 212, 0.15); }
 
-h2 {
+h2, .glass-heading {
   text-align: center;
   color: #f1c40f;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+  font-weight: 700;
 }
 
 label {
-  margin-top: 1rem;
+  margin-top: 0.85rem;
   display: block;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: #00bcd4;
 }
 
 .form-control,
 .form-select {
   width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.2rem;
-  background: #1e1e2f;
-  border: 1px solid #00bcd4;
-  color: yellow;
-  border-radius: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  margin-top: 0.3rem;
+  background: rgba(30, 30, 47, 0.9);
+  border: 1px solid rgba(0, 188, 212, 0.5);
+  color: #f1c40f;
+  border-radius: 0.6rem;
+  font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.glass-button {
-  margin-top: 1.5rem;
-  background: linear-gradient(to right, #00bcd4, #2196f3);
-  border: none;
-  padding: 0.75rem;
-  border-radius: 1rem;
-  width: 100%;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #00bcd4;
+  box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.2);
 }
 
-.glass-button:hover {
-  background: linear-gradient(to right, #2196f3, #00bcd4);
+.form-control[readonly] { opacity: 0.7; cursor: not-allowed; }
+
+.form-select option { background: #1e1e2f; color: #fff; }
+
+/* Options Grid */
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
+
+.col-md-6 { min-width: 0; }
 
 .glass-button-sm {
-  margin-top: 0.5rem;
-  background-color: #444;
-  border: none;
+  display: block;
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.35rem 0.5rem;
+  background: rgba(68, 68, 68, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #f1c40f;
-  padding: 0.3rem 0.6rem;
   border-radius: 0.4rem;
   cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: all 0.25s;
+  font-family: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.glass-button-sm:hover {
-  background-color: #00bcd4;
-  color: #000;
+.glass-button-sm:hover { background: rgba(0, 188, 212, 0.35); color: #fff; }
+.glass-button-sm.active-btn { background: #00bcd4; color: #000; border-color: #00bcd4; }
+
+.glass-button {
+  display: block;
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #00bcd4, #2196f3);
+  border: none;
+  border-radius: 0.85rem;
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
 }
 
-.active-btn {
-  background-color: #00bcd4 !important;
-  color: black !important;
+.glass-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2196f3, #00bcd4);
+  transform: translateY(-2px);
+}
+
+.glass-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+ul { padding-left: 1.1rem; color: #f1c40f; line-height: 1.9; }
+
+@media (max-width: 420px) {
+  .row { grid-template-columns: 1fr; }
 }

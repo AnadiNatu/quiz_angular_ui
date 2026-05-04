@@ -1,68 +1,71 @@
-/* === Base Glass Card === */
-.glass-card {
-  background: rgba(173, 216, 230, 0.25); /* light blue */
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  transition: background 0.4s ease, transform 0.3s ease;
-  color: yellow;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Page wrapper ─────────────────────────────────────── */
+:host {
+  display: block;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  overflow-x: hidden;
 }
 
-/* Hover Mode */
-.glass-card:hover {
-  background: rgba(0, 51, 102, 0.6); /* dark blue */
-  transform: translateY(-4px);
-}
-
-/* === Navbar === */
+/* ── Navbar ───────────────────────────────────────────── */
 .glass-navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  background: rgba(173, 216, 230, 0.25); /* light blue */
-  padding: 1rem 2rem;
-  border-radius: 0.8rem;
+  gap: 0.5rem;
+  background: rgba(173, 216, 230, 0.18);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 0.85rem clamp(1rem, 3vw, 2rem);
+  border-radius: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  position: sticky;
+  top: 0;
+  z-index: 100;
   transition: background 0.4s ease;
-  backdrop-filter: blur(12px);
 }
 
-.glass-navbar:hover {
-  background: rgba(0, 51, 102, 0.6); /* dark blue */
-}
+.glass-navbar:hover { background: rgba(0, 51, 102, 0.5); }
 
-/* Brand */
 .nav-left .brand {
   color: #00bcd4;
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-weight: 700;
   cursor: pointer;
+  white-space: nowrap;
 }
 
-/* Toggle button for mobile */
 .nav-toggle {
   display: none;
-  font-size: 2rem;
-  color: yellow;
+  font-size: 1.75rem;
+  color: #f1c40f;
   cursor: pointer;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0.2rem;
 }
 
-/* Nav links as glass buttons */
 .nav-right {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .nav-right a {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.5rem 1rem;
-  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.09);
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.65rem;
   text-decoration: none;
-  color: yellow;
-  transition: background 0.3s ease, transform 0.3s ease;
-  backdrop-filter: blur(8px);
+  color: #f1c40f;
+  font-size: clamp(0.78rem, 1.8vw, 0.88rem);
+  font-weight: 600;
+  transition: background 0.3s, transform 0.25s;
+  white-space: nowrap;
 }
 
 .nav-right a:hover,
@@ -70,91 +73,179 @@
   background: rgba(0, 188, 212, 0.4);
   color: #fff;
   transform: translateY(-2px);
-  font-weight: bold;
 }
 
-/* Responsive dropdown behavior */
 @media (max-width: 768px) {
-  .nav-toggle {
-    display: block;
-  }
+  .nav-toggle { display: block; }
 
   .nav-right {
     display: none;
     flex-direction: column;
+    align-items: flex-start;
     width: 100%;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
+    gap: 0.35rem;
   }
 
-  .nav-right.open {
-    display: flex;
-  }
+  .nav-right.open { display: flex; }
+
+  .nav-right a { width: 100%; padding: 0.55rem 0.9rem; }
 }
 
-/* === Profile Avatar === */
+/* ── Info Card ────────────────────────────────────────── */
+.admin-info-card {
+  margin-top: 0.75rem;
+  animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── Greeting ─────────────────────────────────────────── */
+.dashboard-header {
+  padding: clamp(1.25rem, 3vw, 2rem) 0 0.5rem;
+}
+
+.dashboard-header h1 {
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  color: #f1c40f;
+  font-weight: 700;
+}
+
+.dashboard-header p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: clamp(0.82rem, 2vw, 0.95rem);
+  margin-top: 0.3rem;
+}
+
+/* ── Grid ─────────────────────────────────────────────── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+/* ── Glass Card ───────────────────────────────────────── */
+.glass-card {
+  background: rgba(173, 216, 230, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  color: #f1c40f;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  transition: background 0.4s ease, transform 0.3s ease;
+}
+
+.glass-card:hover {
+  background: rgba(0, 51, 102, 0.55);
+  transform: translateY(-3px);
+}
+
+.glass-card h3 {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  margin-bottom: 0.75rem;
+  color: #00bcd4;
+}
+
+/* ── Profile Card ─────────────────────────────────────── */
+.profile-card { text-align: center; }
+
 .profile-avatar {
-  width: 100px;
-  height: 100px;
+  width: clamp(70px, 15vw, 100px);
+  height: clamp(70px, 15vw, 100px);
   object-fit: cover;
   border-radius: 50%;
-  margin-bottom: 1rem;
   border: 2px solid #00bcd4;
+  margin-bottom: 0.75rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* === Upload button === */
+.profile-card h3 {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: #f1c40f;
+  margin-bottom: 0.25rem;
+}
+
+.profile-card .text-muted {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
 .upload-btn {
   display: inline-block;
-  background-color: #00bcd4;
-  padding: 0.5rem 1rem;
-  border-radius: 0.8rem;
-  color: black;
-  font-weight: bold;
+  background: #00bcd4;
+  padding: 0.45rem 1rem;
+  border-radius: 0.75rem;
+  color: #000;
+  font-weight: 700;
+  font-size: 0.82rem;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s;
 }
 
-.upload-btn:hover {
-  background-color: #2196f3;
-  color: white;
-}
+.upload-btn:hover { background: #2196f3; color: #fff; }
 
-/* === Scrollable Quiz List === */
+/* ── Scrollable Quiz List ─────────────────────────────── */
 .quiz-scroll-container {
-  max-height: 250px;
+  max-height: clamp(180px, 30vh, 260px);
   overflow-y: auto;
-  padding-right: 0.5rem;
+  padding-right: 0.4rem;
+  scrollbar-width: thin;
+  scrollbar-color: #00bcd4 transparent;
 }
 
-.quiz-scroll-container::-webkit-scrollbar {
-  width: 6px;
-}
+.quiz-scroll-container::-webkit-scrollbar { width: 5px; }
 .quiz-scroll-container::-webkit-scrollbar-thumb {
-  background-color: #00bcd4;
+  background: #00bcd4;
   border-radius: 4px;
 }
 
-/* === Dashboard Grid === */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
+/* ── Taken Quiz List ──────────────────────────────────── */
+.taken-quiz-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: clamp(180px, 30vh, 260px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #00bcd4 transparent;
 }
 
-/* === Button Styles === */
+.taken-quiz-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+}
+
+.taken-quiz-list li span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── Buttons ──────────────────────────────────────────── */
 .glass-button-sm {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   border: none;
   color: #f1c40f;
   padding: 0.3rem 0.6rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: background 0.3s;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: background 0.25s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.glass-button-sm:hover {
-  background: rgba(0, 188, 212, 0.4);
-  color: black;
-}
-
-/* NEED TO CHANGE THE ADMIN PROFILE PART */
+.glass-button-sm:hover { background: rgba(0, 188, 212, 0.4); color: #fff; }
