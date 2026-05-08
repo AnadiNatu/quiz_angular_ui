@@ -129,7 +129,7 @@ export class ParticipantQuizComponent implements OnInit, OnDestroy {
   }
 
   buildForm(): void {
-    const group: { [key: number]: any } = {};
+    const group: { [key: string]: any } = {};
     this.questions.forEach(q => { group[q.id] = [null]; });
     this.responseForm = this.fb.group(group);
   }
@@ -139,7 +139,7 @@ export class ParticipantQuizComponent implements OnInit, OnDestroy {
 
     const responses: ResponseDTO[] = this.questions.map(q => ({
       questionId:     q.id,
-      selectedAnswer: raw[q.id] ?? null
+      selectedAnswer: raw[q.id.toString()] ?? null
     }));
 
     const request: QuizSubmitRequest = {

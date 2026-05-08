@@ -11,28 +11,32 @@
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 1rem;
   padding: clamp(1.5rem, 4vw, 2rem);
   width: 100%;
   max-width: 720px;
   color: #fff;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.35);
+  box-shadow: 0 8px 36px rgba(0, 0, 0, 0.45);
   margin: auto;
-  transition: background 0.3s ease;
+  transition: background 0.35s ease, border-color 0.35s ease;
 }
 
-.glass-card:hover { background: rgba(0, 188, 212, 0.1); }
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
+}
 
 h2 {
-  color: #f1c40f;
+  color: #fff;
   text-align: center;
   margin-bottom: 1.5rem;
   font-size: clamp(1.2rem, 3.5vw, 1.5rem);
-  font-weight: 700;
+  font-weight: 800;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
 }
 
 .row {
@@ -44,54 +48,80 @@ h2 {
 }
 
 .col-md-8, .col-md-4 { min-width: 0; }
-
 .col-12 { grid-column: 1 / -1; }
 
 .form-control,
 .form-select {
   width: 100%;
   padding: 0.6rem 0.75rem;
-  background: rgba(28, 30, 42, 0.9);
-  border: 1px solid rgba(0, 188, 212, 0.5);
-  color: #f1c40f;
+  background: rgba(5, 10, 35, 0.8);
+  border: 1px solid rgba(0, 229, 255, 0.5);
+  color: #fff;
   border-radius: 0.6rem;
   font-size: clamp(0.85rem, 2vw, 0.9rem);
   -webkit-appearance: none;
   appearance: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .form-control:focus,
-.form-select:focus { outline: none; border-color: #00bcd4; }
+.form-select:focus {
+  outline: none;
+  border-color: #00e5ff;
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.25);
+  background: rgba(5, 10, 35, 0.95);
+}
 
-.form-select option { background: #1e1e2f; }
+.form-select option { background: #0d1b3e; color: #fff; }
 
 .glass-button {
   display: block;
   width: 100%;
   padding: 0.6rem 1rem;
-  background: linear-gradient(135deg, #00bcd4, #2196f3);
-  border: none;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.4);
   border-radius: 0.75rem;
   color: #fff;
   font-weight: 700;
   font-size: clamp(0.85rem, 2.2vw, 0.95rem);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.28s ease, color 0.28s ease, border-color 0.28s ease, transform 0.2s ease;
   font-family: inherit;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
 
 .glass-button:hover {
-  background: linear-gradient(135deg, #2196f3, #00bcd4);
+  background: rgba(255, 255, 255, 0.22);
+  color: #0a0f28;
+  border-color: rgba(255, 255, 255, 0.65);
   transform: translateY(-2px);
+  text-shadow: none;
+  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.15);
 }
 
-.alert { border-radius: 0.65rem; font-size: 0.88rem; padding: 0.6rem 0.9rem; }
+.alert {
+  border-radius: 0.65rem;
+  font-size: 0.88rem;
+  padding: 0.6rem 0.9rem;
+  backdrop-filter: blur(6px);
+}
 
-h4.text-warning { color: #f1c40f !important; font-size: clamp(1rem, 2.5vw, 1.2rem); }
-h5.text-info    { color: #00bcd4 !important; font-size: clamp(0.9rem, 2.2vw, 1rem); }
+h4.text-warning {
+  color: #fde68a !important;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  font-weight: 700;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+}
 
-p { margin: 0.4rem 0; font-size: clamp(0.85rem, 2vw, 0.95rem); }
-p strong { color: #00bcd4; }
+h5.text-info {
+  color: #00e5ff !important;
+  font-size: clamp(0.9rem, 2.2vw, 1rem);
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+}
+
+p { margin: 0.4rem 0; font-size: clamp(0.85rem, 2vw, 0.95rem); color: rgba(255,255,255,0.92); }
+p strong { color: #00e5ff; font-weight: 700; }
 
 .list-group { padding: 0; list-style: none; }
 
@@ -99,15 +129,16 @@ p strong { color: #00bcd4; }
   padding: 0.55rem 0.85rem;
   margin-bottom: 0.4rem;
   border-radius: 0.55rem;
-  background: rgba(0, 0, 0, 0.4);
-  color: #f1c40f;
-  border: 1px solid rgba(0, 188, 212, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   font-size: clamp(0.82rem, 2vw, 0.9rem);
-  transition: background 0.25s, transform 0.2s;
+  transition: background 0.28s ease, color 0.28s ease, transform 0.2s ease;
 }
 
 .list-group-item:hover {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
   transform: scale(1.01);
 }
 

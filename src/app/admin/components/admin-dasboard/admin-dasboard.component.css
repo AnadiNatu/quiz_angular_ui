@@ -15,33 +15,39 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.4rem;
-  background: rgba(173, 216, 230, 0.18);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   padding: 0.75rem clamp(1rem, 3vw, 2rem);
   border-radius: 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   position: sticky;
   top: 0;
   z-index: 200;
-  transition: background 0.4s ease;
+  transition: background 0.35s ease, border-color 0.35s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-.glass-navbar:hover { background: rgba(0, 51, 102, 0.5); }
+.glass-navbar:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+}
 
 .nav-left .brand {
-  color: #00bcd4;
+  color: #fff;
   font-size: clamp(1rem, 2.5vw, 1.35rem);
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.8);
+  letter-spacing: 0.03em;
 }
 
 .nav-toggle {
   display: none;
   font-size: 1.6rem;
-  color: #f1c40f;
+  color: #fff;
   cursor: pointer;
   background: none;
   border: none;
@@ -57,22 +63,26 @@
 }
 
 .nav-right a {
-  background: rgba(255, 255, 255, 0.09);
-  padding: 0.38rem 0.7rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 0.38rem 0.75rem;
   border-radius: 0.6rem;
   text-decoration: none;
-  color: #f1c40f;
+  color: #fff;
   font-size: clamp(0.72rem, 1.6vw, 0.82rem);
   font-weight: 600;
   white-space: nowrap;
-  transition: background 0.3s, transform 0.2s;
+  transition: background 0.28s ease, color 0.28s ease, border-color 0.28s ease, transform 0.2s ease;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 .nav-right a:hover,
 .nav-right .active-link {
-  background: rgba(0, 188, 212, 0.4);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.22);
+  color: #0a0f28;
+  border-color: rgba(255, 255, 255, 0.6);
   transform: translateY(-1px);
+  text-shadow: none;
 }
 
 @media (max-width: 768px) {
@@ -101,14 +111,16 @@
 
 .dashboard-header h1 {
   font-size: clamp(1.3rem, 3.5vw, 1.9rem);
-  color: #f1c40f;
-  font-weight: 700;
+  color: #fff;
+  font-weight: 800;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
 }
 
 .dashboard-header p {
-  color: rgba(255, 255, 255, 0.58);
+  color: rgba(255, 255, 255, 0.75);
   font-size: clamp(0.8rem, 1.8vw, 0.92rem);
   margin-top: 0.3rem;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 /* ── Grid ─────────────────────────────────────────────── */
@@ -121,46 +133,52 @@
 
 /* ── Glass Card ───────────────────────────────────────── */
 .glass-card {
-  background: rgba(173, 216, 230, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 1rem;
   padding: clamp(0.85rem, 2.5vw, 1.35rem);
-  color: #f1c40f;
-  box-shadow: 0 5px 22px rgba(0, 0, 0, 0.22);
-  transition: background 0.4s ease, transform 0.3s ease;
+  color: #fff;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.35);
+  transition: background 0.35s ease, transform 0.3s ease, border-color 0.35s ease;
 }
 
 .glass-card:hover {
-  background: rgba(0, 51, 102, 0.5);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
   transform: translateY(-3px);
 }
 
 .glass-card h3 {
   font-size: clamp(0.95rem, 2.2vw, 1.1rem);
-  color: #00bcd4;
+  color: #00e5ff;
   margin-bottom: 0.7rem;
   font-weight: 700;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
 }
 
 .glass-card h4 {
   font-size: clamp(0.9rem, 2vw, 1rem);
-  color: #00bcd4;
+  color: #00e5ff;
   margin-bottom: 0.6rem;
   font-weight: 700;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
 }
 
 .glass-card p {
   font-size: clamp(0.8rem, 1.8vw, 0.88rem);
   margin: 0.3rem 0;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.92);
 }
 
-.glass-card p strong { color: #00bcd4; }
+.glass-card p strong {
+  color: #00e5ff;
+  font-weight: 700;
+}
 
 .text-muted-sm {
-  color: rgba(255,255,255,0.45);
+  color: rgba(255, 255, 255, 0.55);
   font-size: 0.82rem;
 }
 
@@ -172,36 +190,43 @@
   height: clamp(64px, 14vw, 96px);
   object-fit: cover;
   border-radius: 50%;
-  border: 2px solid #00bcd4;
+  border: 3px solid rgba(0, 229, 255, 0.8);
   margin: 0 auto 0.7rem;
   display: block;
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.4);
 }
 
 .profile-card h3 {
   font-size: clamp(1rem, 2.5vw, 1.15rem);
-  color: #f1c40f;
+  color: #fff;
   margin-bottom: 0.2rem;
+  font-weight: 700;
 }
 
 .role-badge-text {
   font-size: 0.78rem;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.6);
   margin-bottom: 0.7rem;
 }
 
 .upload-btn {
   display: inline-block;
-  background: #00bcd4;
+  background: transparent;
+  border: 1px solid rgba(0, 229, 255, 0.6);
   padding: 0.4rem 0.9rem;
   border-radius: 0.7rem;
-  color: #000;
+  color: #00e5ff;
   font-weight: 700;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: background 0.25s;
+  transition: background 0.28s ease, color 0.28s ease, border-color 0.28s ease;
 }
 
-.upload-btn:hover { background: #2196f3; color: #fff; }
+.upload-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #0a0f28;
+  border-color: rgba(255, 255, 255, 0.6);
+}
 
 /* ── Scroll Container ─────────────────────────────────── */
 .quiz-scroll-container {
@@ -209,11 +234,11 @@
   overflow-y: auto;
   padding-right: 0.3rem;
   scrollbar-width: thin;
-  scrollbar-color: #00bcd4 transparent;
+  scrollbar-color: #00e5ff transparent;
 }
 
 .quiz-scroll-container::-webkit-scrollbar { width: 5px; }
-.quiz-scroll-container::-webkit-scrollbar-thumb { background: #00bcd4; border-radius: 4px; }
+.quiz-scroll-container::-webkit-scrollbar-thumb { background: #00e5ff; border-radius: 4px; }
 
 /* ── Taken Quiz List ──────────────────────────────────── */
 .taken-quiz-list {
@@ -223,7 +248,7 @@
   max-height: clamp(180px, 28vh, 240px);
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #00bcd4 transparent;
+  scrollbar-color: #00e5ff transparent;
 }
 
 .taken-quiz-item {
@@ -232,9 +257,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.45rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   flex-wrap: wrap;
   font-size: clamp(0.78rem, 1.8vw, 0.88rem);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .taken-quiz-item span {
@@ -256,44 +282,48 @@
   display: block;
   text-align: center;
   padding: 0.55rem 0.5rem;
-  background: rgba(0, 188, 212, 0.15);
-  border: 1px solid rgba(0, 188, 212, 0.35);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.32);
   border-radius: 0.7rem;
-  color: #00bcd4;
+  color: #fff;
   text-decoration: none;
   font-size: clamp(0.75rem, 1.8vw, 0.82rem);
   font-weight: 600;
-  transition: all 0.25s ease;
+  transition: background 0.28s ease, color 0.28s ease, border-color 0.28s ease, transform 0.2s ease;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.35);
 }
 
 .quick-link-btn:hover {
-  background: rgba(0, 188, 212, 0.3);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.22);
+  color: #0a0f28;
+  border-color: rgba(255, 255, 255, 0.6);
   transform: translateY(-2px);
+  text-shadow: none;
 }
 
 /* ── Buttons ──────────────────────────────────────────── */
 .glass-button-sm {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #f1c40f;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: #fff;
   padding: 0.28rem 0.55rem;
   border-radius: 0.45rem;
   cursor: pointer;
   font-size: 0.75rem;
   font-weight: 600;
-  transition: background 0.25s;
+  transition: background 0.28s ease, color 0.28s ease, border-color 0.28s ease;
   white-space: nowrap;
   flex-shrink: 0;
   font-family: inherit;
 }
 
 .glass-button-sm:hover {
-  background: rgba(0,188,212,0.35);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.22);
+  color: #0a0f28;
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .mt-2 { margin-top: 0.5rem; }

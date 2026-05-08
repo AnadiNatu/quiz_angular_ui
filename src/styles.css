@@ -1,4 +1,3 @@
-/* ── Global Reset & Base ──────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -21,45 +20,41 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #ffffff;
 }
 
-/* ── Scrollbar Styling ────────────────────────────────── */
 ::-webkit-scrollbar        { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track  { background: transparent; }
-::-webkit-scrollbar-thumb  { background: rgba(0,188,212,0.5); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #00bcd4; }
+::-webkit-scrollbar-thumb  { background: rgba(0,188,212,0.6); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #00e5ff; }
 
-/* ── Bootstrap form overrides for dark theme ──────────── */
 .form-control,
 .form-select {
   color: #fff !important;
-  background-color: rgba(30, 30, 47, 0.9) !important;
-  border-color: rgba(0, 188, 212, 0.5) !important;
+  background-color: rgba(10, 15, 40, 0.75) !important;
+  border-color: rgba(0, 229, 255, 0.55) !important;
 }
 
 .form-control:focus,
 .form-select:focus {
-  border-color: #00bcd4 !important;
-  box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.2) !important;
+  border-color: #00e5ff !important;
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.25) !important;
   outline: none !important;
+  background-color: rgba(10, 15, 40, 0.9) !important;
 }
 
-.form-control::placeholder { color: rgba(255,255,255,0.35) !important; }
+.form-control::placeholder { color: rgba(255,255,255,0.45) !important; }
 
 .form-select option {
-  background: #1e1e2f;
+  background: #0d1b3e;
   color: #fff;
 }
 
-/* ── Bootstrap alert tweaks ───────────────────────────── */
 .alert {
   border-radius: 0.75rem;
   font-size: 0.88rem;
 }
 
-/* ── Utility ──────────────────────────────────────────── */
 .w-100 { width: 100% !important; }
 .text-center { text-align: center !important; }
-
-/* ── Angular router-outlet: no layout interference ───── */
 router-outlet { display: none; }

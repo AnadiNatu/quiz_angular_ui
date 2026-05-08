@@ -11,35 +11,43 @@
 }
 
 .glass-card {
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   padding: clamp(1.5rem, 4vw, 2rem);
   border-radius: 1rem;
   width: 100%;
   max-width: 520px;
   color: #fff;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.35);
+  box-shadow: 0 8px 36px rgba(0, 0, 0, 0.45);
   margin: auto;
+  transition: background 0.35s ease, border-color 0.35s ease;
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 h2 {
   text-align: center;
-  color: #f1c40f;
+  color: #fff;
   margin-bottom: 1.25rem;
   font-size: clamp(1.25rem, 3.5vw, 1.6rem);
-  font-weight: 700;
+  font-weight: 800;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
 }
 
 label {
   margin-top: 0.85rem;
   display: block;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.82rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #00bcd4;
+  letter-spacing: 0.05em;
+  color: #00e5ff;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
 }
 
 .form-control,
@@ -47,8 +55,8 @@ label {
   width: 100%;
   padding: 0.6rem 0.75rem;
   margin-top: 0.3rem;
-  background: rgba(30, 30, 47, 0.9);
-  border: 1px solid rgba(0, 188, 212, 0.5);
+  background: rgba(5, 10, 35, 0.8);
+  border: 1px solid rgba(0, 229, 255, 0.5);
   color: #fff;
   border-radius: 0.6rem;
   font-size: clamp(0.85rem, 2.2vw, 0.95rem);
@@ -60,16 +68,18 @@ label {
 .form-control:focus,
 .form-select:focus {
   outline: none;
-  border-color: #00bcd4;
-  box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.2);
+  border-color: #00e5ff;
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.25);
+  background: rgba(5, 10, 35, 0.95);
 }
 
-.form-select option { background: #1e1e2f; color: #fff; }
+.form-select option { background: #0d1b3e; color: #fff; }
 
 .info-box {
   margin-top: 0.4rem;
-  color: #ffc107;
+  color: #fde68a;
   font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .question-row {
@@ -82,44 +92,52 @@ label {
 .question-row .form-select { flex: 1; margin-top: 0; }
 
 .max-btn {
-  background: #f1c40f;
-  color: #000;
-  border: none;
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
   padding: 0 0.9rem;
   border-radius: 0.6rem;
   cursor: pointer;
   font-weight: 700;
   font-size: 0.82rem;
   white-space: nowrap;
-  transition: background 0.25s;
+  transition: background 0.28s ease, color 0.28s ease, border-color 0.28s ease;
   flex-shrink: 0;
 }
 
-.max-btn:hover { background: #ffeb3b; }
+.max-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #0a0f28;
+  border-color: rgba(255, 255, 255, 0.6);
+}
 
 .glass-button {
   display: block;
   width: 100%;
   margin-top: 1.5rem;
   padding: 0.75rem;
-  background: linear-gradient(135deg, #00bcd4, #2196f3);
-  border: none;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.45);
   border-radius: 0.85rem;
   color: #fff;
   font-weight: 700;
   font-size: clamp(0.9rem, 2.5vw, 1rem);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.28s ease, color 0.28s ease, border-color 0.28s ease, transform 0.2s ease;
   font-family: inherit;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
 
 .glass-button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2196f3, #00bcd4);
+  background: rgba(255, 255, 255, 0.24);
+  color: #0a0f28;
+  border-color: rgba(255, 255, 255, 0.7);
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 188, 212, 0.4);
+  text-shadow: none;
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.18);
 }
 
-.glass-button:disabled { opacity: 0.5; cursor: not-allowed; }
+.glass-button:disabled { opacity: 0.45; cursor: not-allowed; }
 
 @media (max-width: 380px) {
   .question-row { flex-direction: column; }

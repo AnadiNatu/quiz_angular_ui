@@ -7,60 +7,70 @@
   gap: 1rem;
 }
 
-/* Search */
 .quiz-list-container input.form-control {
   width: 100%;
   padding: 0.6rem 0.85rem;
-  background: rgba(30, 30, 47, 0.9);
-  border: 1px solid rgba(0, 188, 212, 0.5);
+  background: rgba(5, 10, 35, 0.8);
+  border: 1px solid rgba(0, 229, 255, 0.5);
   color: #fff;
   border-radius: 0.65rem;
   font-size: 0.9rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.quiz-list-container input.form-control::placeholder { color: rgba(255,255,255,0.35); }
-.quiz-list-container input.form-control:focus { outline: none; border-color: #00bcd4; }
+.quiz-list-container input.form-control::placeholder { color: rgba(255,255,255,0.4); }
+.quiz-list-container input.form-control:focus {
+  outline: none;
+  border-color: #00e5ff;
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.22);
+}
 
 .quiz-list-container .btn.btn-primary {
   padding: 0.5rem 1rem;
   border-radius: 0.6rem;
   font-size: 0.88rem;
-  font-weight: 600;
-  border: none;
-  background: linear-gradient(135deg, #00bcd4, #2196f3);
+  font-weight: 700;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   color: #fff;
   cursor: pointer;
-  transition: all 0.25s;
+  transition: background 0.28s ease, color 0.28s ease, border-color 0.28s ease;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
 
 .quiz-list-container .btn.btn-primary:hover {
-  background: linear-gradient(135deg, #2196f3, #00bcd4);
+  background: rgba(255, 255, 255, 0.22);
+  color: #0a0f28;
+  border-color: rgba(255, 255, 255, 0.65);
+  text-shadow: none;
 }
 
 /* Quiz Card */
 .quiz-card {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   padding: clamp(0.85rem, 2.5vw, 1.25rem);
   border-radius: 0.9rem;
-  color: #f1c40f;
-  box-shadow: 0 4px 20px rgba(31, 38, 135, 0.3);
+  color: #fff;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.4);
   cursor: pointer;
   overflow: hidden;
-  transition: background 0.4s ease, transform 0.35s ease, box-shadow 0.35s ease;
+  transition: background 0.35s ease, transform 0.3s ease, box-shadow 0.3s ease, border-color 0.35s ease;
 }
 
 .quiz-card:hover {
-  background: rgba(0, 188, 212, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
   transform: translateY(-4px);
-  box-shadow: 0 8px 28px rgba(0, 188, 212, 0.2);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
 }
 
 .quiz-card h4 {
   margin-bottom: 0.4rem;
-  color: #f1c40f;
+  color: #fff;
   font-size: clamp(0.95rem, 2.5vw, 1.1rem);
   font-weight: 700;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
 }
 
 .quiz-details {
@@ -70,7 +80,7 @@
   overflow: hidden;
   transition: opacity 0.45s ease, max-height 0.45s ease, transform 0.45s ease;
   font-size: clamp(0.82rem, 2vw, 0.9rem);
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .quiz-card.expanded .quiz-details {
@@ -90,34 +100,49 @@
 
 .glass-button {
   padding: 0.45rem 0.85rem;
-  background: linear-gradient(135deg, #00bcd4, #2196f3);
-  border: none;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.38);
   border-radius: 0.55rem;
   color: #fff;
   font-weight: 700;
   font-size: clamp(0.75rem, 2vw, 0.82rem);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.28s ease, color 0.28s ease, border-color 0.28s ease, transform 0.2s ease;
   white-space: nowrap;
   font-family: inherit;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.35);
 }
 
 .glass-button:hover {
-  background: linear-gradient(135deg, #2196f3, #00bcd4);
+  background: rgba(255, 255, 255, 0.22);
+  color: #0a0f28;
+  border-color: rgba(255, 255, 255, 0.65);
   transform: scale(1.04);
+  text-shadow: none;
 }
 
-.glass-button.alt { background: rgba(68,68,68,0.8); color: #f1c40f; border: 1px solid rgba(255,255,255,0.1); }
-.glass-button.alt:hover { background: rgba(0, 188, 212, 0.4); color: #000; }
+.glass-button.alt {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.85);
+}
+.glass-button.alt:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #0a0f28;
+  border-color: rgba(255, 255, 255, 0.65);
+}
 
 .alert-danger {
-  background: rgba(255, 77, 77, 0.2);
-  color: #ff6b6b;
-  border: 1px solid rgba(255, 77, 77, 0.4);
+  background: rgba(220, 53, 69, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(220, 53, 69, 0.4);
   padding: 0.75rem 1rem;
   border-radius: 0.65rem;
   text-align: center;
   font-size: 0.88rem;
 }
 
-.text-center.text-muted { color: rgba(255,255,255,0.45); font-size: 0.88rem; text-align: center; }
+.text-center.text-muted {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.88rem;
+  text-align: center;
+}
