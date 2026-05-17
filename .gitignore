@@ -1,42 +1,73 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# ================= BUILD =================
+target/
+build/
+out/
+*.class
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
+# ================= LOGS =================
+*.log
+logs/
+*.out
+*.err
+*.gz
 
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
+# ================= ENV =================
+# ================= DOCKER SECRETS =================
+.env
+.env.*
+!.env.example
 
-# IDEs and editors
+# ================= SPRING CONFIG (CRITICAL) =================
+**/application.properties
+**/application.yml
+**/application-*.properties
+**/application-*.yml
+
+# ================= SECURITY =================
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+
+# ================= IDE =================
 .idea/
-.project
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# ================= STS =================
+.apt_generated
 .classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
 
-# Visual Studio Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
+# ================= NETBEANS =================
+/nbproject/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-
-# System files
+# ================= OS =================
 .DS_Store
 Thumbs.db
+
+# ================= TEST =================
+coverage/
+reports/
+
+# ================= NODE =================
+node_modules/
+
+# ================= TEMP =================
+*.tmp
+*.swp
+*.bak
+
+# ================= KEEP EXAMPLE =================
+# !.env.example

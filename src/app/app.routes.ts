@@ -6,12 +6,12 @@ import { ForgotPasswordComponent } from './auth/components/forgot-password/forgo
 import { ResetPasswordComponent } from './auth/components/reset-password/reset-password.component';
 
 export const routes: Routes = [
-  { path: '',              component: HomeComponent },
-  { path: 'home',          redirectTo: '', pathMatch: 'full' },
-  { path: 'login',         component: LoginComponent },
-  { path: 'signup',        component: SignupComponent },
-  { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'reset-password',  component: ResetPasswordComponent },
+  { path: '',                  redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home',              component: HomeComponent },
+  { path: 'login',             component: LoginComponent },
+  { path: 'signup',            component: SignupComponent },
+  { path: 'forgot-password',   component: ForgotPasswordComponent },
+  { path: 'reset-password',    component: ResetPasswordComponent },
 
   {
     path: 'admin',
@@ -20,5 +20,5 @@ export const routes: Routes = [
   },
 
   // Wildcard always last
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: 'home' }
 ];

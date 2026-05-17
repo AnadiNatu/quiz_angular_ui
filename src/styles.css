@@ -55,6 +55,5 @@ body {
   font-size: 0.88rem;
 }
 
-.w-100 { width: 100% !important; }
+.w-100       { width: 100% !important; }
 .text-center { text-align: center !important; }
-router-outlet { display: none; }
