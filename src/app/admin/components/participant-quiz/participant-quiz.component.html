@@ -1,41 +1,46 @@
 <div class="scroll-wrapper">
-  <div class="glass-card">
+  <div class="main-card">
 
-    <h2 class="text-center mb-4">🎯 Take a Quiz</h2>
+    <button class="back-link" (click)="router.navigate(['/admin'])">← Dashboard</button>
+
+    <h2 class="page-heading">🎯 Take a Quiz</h2>
 
     <!-- Error Banner -->
-    <div *ngIf="errorMessage" class="alert-glass alert-danger-glass mb-3">
-      ⚠️ {{ errorMessage }}
-      <button class="link-btn ms-2" (click)="reset()">Try again</button>
+    <div *ngIf="errorMessage" class="alert-banner">
+      <span>⚠️ {{ errorMessage }}</span>
+      <button class="retry-btn" (click)="reset()">Try Again</button>
     </div>
 
     <!-- Search & Dropdown (hidden once quiz starts) -->
-    <ng-container *ngIf="showSearch && !submitted">
-      <div class="search-row mb-3">
+    <div *ngIf="showSearch && !submitted" class="search-section">
+      <div class="search-row">
         <input type="text"
                class="form-control"
                [(ngModel)]="searchText"
                placeholder="Search quiz by title..." />
-        <button class="glass-button" (click)="onSearch()">Search</button>
+        <button class="btn-search" (click)="onSearch()">🔍 Search</button>
       </div>
 
-      <select class="form-select mb-4"
+      <select class="form-select"
               [(ngModel)]="selectedQuizId"
               (change)="onDropdownSelect()">
-        <option [value]="0" disabled>-- Select a Quiz --</option>
+        <option [value]="0" disabled>— Select a Quiz from list —</option>
         <option *ngFor="let q of allQuizzes" [value]="q.id">{{ q.title }}</option>
       </select>
-    </ng-container>
+    </div>
 
     <!-- Countdown Timer -->
-    <div *ngIf="showTimer" class="timer-box text-center mb-3">
-      ⏳ Starting in <strong>{{ timer }}</strong> seconds...
+    <div *ngIf="showTimer" class="timer-box">
+      <p>⏳ Get ready! Quiz starts in</p>
+      <div class="timer-count">{{ timer }}</div>
+      <p>seconds...</p>
     </div>
 
     <!-- Active Quiz Label -->
     <div *ngIf="quizTitle && questions.length > 0 && !submitted"
-         class="quiz-label text-center mb-3">
-      📝 <strong>{{ quizTitle }}</strong>
+         class="quiz-label-bar">
+      <span class="quiz-label-title">📝 {{ quizTitle }}</span>
+      <span style="font-size: 0.78rem; color: #64748b;">{{ questions.length }} questions</span>
     </div>
 
     <!-- Quiz Form -->
@@ -43,10 +48,10 @@
           [formGroup]="responseForm"
           (ngSubmit)="submitQuiz()">
 
-      <div class="quiz-scroll-container">
+      <div class="quiz-scroll">
         <div *ngFor="let q of questions; let i = index"
-             class="quiz-question-card">
-          <p class="question-text">📌 Q{{ i + 1 }}. {{ q.questionTitle }}</p>
+             class="question-card">
+          <p class="question-text">Q{{ i + 1 }}. {{ q.questionTitle }}</p>
           <div class="form-check"
                *ngFor="let opt of [q.option1, q.option2, q.option3, q.option4]">
             <input class="form-check-input"
@@ -55,69 +60,61 @@
                    [formControlName]="q.id.toString()"
                    [id]="'q' + q.id + '_' + opt" />
             <label class="form-check-label"
-                   [for]="'q' + q.id + '_' + opt">
-              {{ opt }}
-            </label>
+                   [for]="'q' + q.id + '_' + opt">{{ opt }}</label>
           </div>
         </div>
       </div>
 
-      <div class="text-center mt-4">
-        <button type="submit" class="glass-button">Submit Quiz</button>
-      </div>
+      <button type="submit" class="btn-submit">Submit Quiz →</button>
     </form>
 
     <!-- Result Summary -->
     <ng-container *ngIf="submitted && resultSummary">
-      <div class="result-summary-card">
-        <h3 class="text-center mb-3">📊 Your Result</h3>
+      <div class="result-card">
+        <h3 class="result-heading">📊 Quiz Results</h3>
 
-        <div class="result-grid">
-          <div class="result-stat">
-            <span class="stat-val">{{ resultSummary.totalQuestions }}</span>
-            <span class="stat-lbl">Total Questions</span>
+        <div class="result-stats-grid">
+          <div class="stat-tile">
+            <span class="val">{{ resultSummary.totalQuestions }}</span>
+            <span class="lbl">Total Qs</span>
           </div>
-          <div class="result-stat correct-stat">
-            <span class="stat-val">{{ resultSummary.correctAnswers }}</span>
-            <span class="stat-lbl">Correct</span>
+          <div class="stat-tile correct-tile">
+            <span class="val">{{ resultSummary.correctAnswers }}</span>
+            <span class="lbl">Correct</span>
           </div>
-          <div class="result-stat wrong-stat">
-            <span class="stat-val">{{ resultSummary.incorrectAnswers }}</span>
-            <span class="stat-lbl">Incorrect</span>
+          <div class="stat-tile wrong-tile">
+            <span class="val">{{ resultSummary.incorrectAnswers }}</span>
+            <span class="lbl">Incorrect</span>
           </div>
-          <div class="result-stat score-stat">
-            <span class="stat-val">{{ resultSummary.percentage | number:'1.1-1' }}%</span>
-            <span class="stat-lbl">Score</span>
+          <div class="stat-tile score-tile">
+            <span class="val">{{ resultSummary.percentage | number:'1.0-0' }}%</span>
+            <span class="lbl">Score</span>
           </div>
         </div>
 
-        <p class="text-center mt-2">
-          <strong>Quiz:</strong> {{ resultSummary.quizTitle }}
-        </p>
+        <p class="quiz-name-row"><strong>{{ resultSummary.quizTitle }}</strong></p>
 
-        <div class="status-badge text-center mt-2">
-          <span class="badge"
+        <div class="text-center mt-2">
+          <span class="status-badge"
                 [class.badge-pass]="resultSummary.percentage >= 60"
                 [class.badge-fail]="resultSummary.percentage < 60">
-            {{ resultSummary.percentage >= 60 ? 'PASSED ✅' : 'FAILED ❌' }}
+            {{ resultSummary.percentage >= 60 ? '✅ PASSED' : '❌ FAILED' }}
           </span>
         </div>
 
-        <!-- Detailed result after clicking -->
-        <div *ngIf="detailedResult" class="detailed-result mt-3">
-          <p><strong>Taken At:</strong>
-            {{ detailedResult.takenAt | date:'dd MMM yyyy, hh:mm a' }}</p>
+        <div *ngIf="detailedResult" class="detail-extra mt-3">
+          <p><strong>Taken At:</strong> {{ detailedResult.takenAt | date:'dd MMM yyyy, hh:mm a' }}</p>
           <p><strong>Curator:</strong> {{ detailedResult.curatorUsername }}</p>
         </div>
 
-        <div class="action-row mt-4 flex-wrap">
-          <button class="glass-button" (click)="loadDetailedResult()">
+        <div class="result-actions mt-3">
+          <button class="btn-action btn-action-primary" (click)="loadDetailedResult()">
             📋 Full Record
           </button>
-          <button class="glass-button" (click)="openReportCard()">
+          <button class="btn-action btn-action-primary" (click)="openReportCard()">
             🖨️ Report Card
           </button>
-          <button class="glass-button alt" (click)="reset()">
+          <button class="btn-action btn-action-outline" (click)="reset()">
             🔄 Take Another
           </button>
         </div>

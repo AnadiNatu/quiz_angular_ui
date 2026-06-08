@@ -4,7 +4,7 @@ import {
   ResponseDTO, QuizResultDTO, ResultDTO
 } from '../../models/admin-dtos';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
 import { AdminServiceService } from '../../services/admin-service.service';
 import { UserStorageService } from '../../../auth/services/user-storage/user-storage.service';
 import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
@@ -12,7 +12,7 @@ import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
 @Component({
   selector: 'app-participant-quiz',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, FormsModule, DecimalPipe, DatePipe],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, FormsModule, DecimalPipe, DatePipe , RouterLink],
   templateUrl: './participant-quiz.component.html',
   styleUrl: './participant-quiz.component.css'
 })
@@ -48,7 +48,7 @@ export class ParticipantQuizComponent implements OnInit, OnDestroy {
     private adminService: AdminServiceService,
     private storage:      UserStorageService,
     private fb:           FormBuilder,
-    private router:       Router
+    public router:       Router
   ) {}
 
   ngOnInit(): void {

@@ -1,217 +1,64 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-.glass-container {
+:host {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
   min-height: 100vh;
-  min-height: 100dvh;
-  padding: 1.5rem 1rem;
-  overflow-y: auto;
-}
-
-.glass-signup-card {
-  background: rgba(255, 255, 255, 0.13);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 1.25rem;
-  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 4vw, 2rem);
-  width: 100%;
-  max-width: 480px;
-  margin: auto;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  animation: slideUp 0.45s ease forwards;
-  transition: background 0.35s ease, border-color 0.35s ease;
-}
-
-.glass-signup-card:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.14);
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0);    }
-}
-
-.card-header-section { margin-bottom: 1.5rem; text-align: center; }
-
-.logo-icon {
-  font-size: clamp(2rem, 6vw, 2.8rem);
-  display: block;
-  margin-bottom: 0.4rem;
-  line-height: 1;
-}
-
-h2 {
-  color: #fff;
-  font-size: clamp(1.35rem, 4vw, 1.75rem);
-  font-weight: 800;
-  text-shadow: 0 2px 14px rgba(0,0,0,0.5);
-}
-
-.subtitle {
-  color: rgba(255, 255, 255, 0.68);
-  font-size: clamp(0.78rem, 2.3vw, 0.88rem);
-  margin-top: 0.25rem;
-}
-
-.form-group { margin-bottom: 1rem; }
-
-.form-label {
-  display: block;
-  color: #00e5ff;
-  font-weight: 700;
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.35rem;
-  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
-}
-
-.input-wrapper { position: relative; display: flex; align-items: center; }
-
-.input-icon {
-  position: absolute;
-  left: 0.75rem;
-  font-size: 1rem;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.form-control {
-  width: 100%;
-  padding: 0.65rem 0.75rem 0.65rem 2.4rem;
-  background: rgba(5, 10, 35, 0.8);
-  border: 1px solid rgba(0, 229, 255, 0.5);
-  color: #fff;
-  border-radius: 0.75rem;
-  font-size: clamp(0.88rem, 2.5vw, 0.95rem);
-  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
-  -webkit-appearance: none;
-}
-
-.form-control::placeholder { color: rgba(255, 255, 255, 0.38); }
-
-.form-control:focus {
-  outline: none;
-  border-color: #00e5ff;
-  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.22);
-  background: rgba(5, 10, 35, 0.95);
-  color: #fff;
-}
-
-/* ── Role Grid ────────────────────────────────────────── */
-.role-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
-}
-
-.role-card {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
-  padding: clamp(0.6rem, 2vw, 0.85rem) 0.4rem;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.85rem;
-  cursor: pointer;
-  transition: background 0.28s ease, border-color 0.28s ease, color 0.28s ease, transform 0.2s ease;
-  color: rgba(255, 255, 255, 0.9);
-  font-family: inherit;
+  justify-content: center;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
 }
 
-.role-card:hover {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.65);
-  transform: translateY(-2px);
-}
-
-.role-card:hover .role-name  { color: #0a0f28; }
-.role-card:hover .role-desc  { color: rgba(10, 15, 40, 0.7); }
-
-.role-card.active-role {
-  background: rgba(0, 229, 255, 0.22);
-  border-color: #00e5ff;
-  box-shadow: 0 0 14px rgba(0, 229, 255, 0.3);
-}
-
-.role-icon  { font-size: clamp(1.2rem, 4vw, 1.5rem); }
-.role-name  { font-size: clamp(0.72rem, 2vw, 0.85rem); font-weight: 700; color: #fff; }
-.role-desc  { font-size: clamp(0.62rem, 1.8vw, 0.72rem); color: rgba(255,255,255,0.6); text-align: center; }
-
-/* ── Alerts ───────────────────────────────────────────── */
-.alert-glass {
-  border-radius: 0.75rem;
-  padding: 0.6rem 0.9rem;
-  font-size: 0.85rem;
-  margin-top: 0.75rem;
-  backdrop-filter: blur(6px);
-}
-
-.alert-danger-glass {
-  background: rgba(220, 53, 69, 0.2);
-  border: 1px solid rgba(220, 53, 69, 0.45);
-  color: #fca5a5;
-}
-
-.alert-success-glass {
-  background: rgba(25, 135, 84, 0.2);
-  border: 1px solid rgba(25, 135, 84, 0.45);
-  color: #86efac;
-}
-
-/* ── Button ───────────────────────────────────────────── */
-.glass-button {
-  display: block;
+.signup-card-wrapper {
+  max-width: 440px;
   width: 100%;
-  margin-top: 1.25rem;
-  padding: 0.75rem 1rem;
-  background: transparent;
-  border: 2px solid rgba(255, 255, 255, 0.45);
+  margin: 0 auto;
+}
+
+/* ──── Advanced Role Picker Visual cards ──── */
+.role-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.68rem;
+  margin-bottom: 1.2rem;
+}
+
+.role-visual-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 0.85rem;
-  color: #fff;
-  font-weight: 700;
-  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  padding: 0.75rem;
+  text-align: center;
   cursor: pointer;
-  transition: background 0.28s ease, color 0.28s ease, border-color 0.28s ease, transform 0.2s ease;
-  font-family: inherit;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
 }
 
-.glass-button:hover {
-  background: rgba(255, 255, 255, 0.24);
-  color: #0a0f28;
-  border-color: rgba(255, 255, 255, 0.7);
+.role-visual-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
-  text-shadow: none;
-  box-shadow: 0 6px 22px rgba(255, 255, 255, 0.16);
 }
 
-.glass-link-btn {
-  color: #00e5ff;
-  text-decoration: none;
-  font-size: clamp(0.82rem, 2.3vw, 0.9rem);
-  font-weight: 700;
-  transition: color 0.25s;
-  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+.role-visual-card.selected {
+  background: rgba(0, 229, 255, 0.1);
+  border-color: #00e5ff;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
 }
 
-.glass-link-btn:hover { color: #fff; text-decoration: underline; }
+.role-visual-card .role-emoji {
+  font-size: 1.5rem;
+  margin-bottom: 0.2rem;
+  display: block;
+}
 
-.text-muted-light {
+.role-visual-card .role-title {
+  font-weight: 800;
+  color: #fff;
+  font-size: 0.85rem;
+  display: block;
+}
+
+.role-visual-card .role-subtitle {
+  font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.55);
-  font-size: clamp(0.8rem, 2.3vw, 0.88rem);
-}
-
-@media (max-width: 380px) {
-  .role-grid { grid-template-columns: 1fr; }
-  .role-card { flex-direction: row; justify-content: center; gap: 0.5rem; padding: 0.6rem; }
-}
-
-@media (min-width: 481px) {
-  .glass-container { align-items: center; }
+  display: block;
+  margin-top: 0.1rem;
 }

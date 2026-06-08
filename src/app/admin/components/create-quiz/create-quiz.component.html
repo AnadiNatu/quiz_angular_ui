@@ -1,46 +1,52 @@
-<div class="glass-container">
-  <div class="glass-card">
-    <h2>Create New Quiz</h2>
+<div class="page-wrapper">
+  <div class="form-card">
+
+    <a routerLink="/admin" class="back-link">← Dashboard</a>
+
+    <h2 class="page-title">Create a <span>New Quiz</span></h2>
+
     <form [formGroup]="quizForm" (ngSubmit)="createQuiz()">
 
-      <label>Title</label>
+      <label class="field-label">Quiz Title</label>
       <input type="text" class="form-control"
-             formControlName="title" placeholder="Enter quiz title" />
+             formControlName="title" placeholder="e.g. Advanced JavaScript Concepts" />
 
-      <label>Category</label>
+      <label class="field-label">Category</label>
       <select class="form-select" formControlName="category"
               (change)="onCategoryChange()">
         <option value="" disabled selected>Select category</option>
         <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
       </select>
-      <div *ngIf="availableQuestions > 0" class="info-box">
-        📊 Available questions: <strong>{{ availableQuestions }}</strong>
-      </div>
+      <span *ngIf="availableQuestions > 0" class="info-note">
+        📊 {{ availableQuestions }} questions available
+      </span>
 
-      <label>Difficulty Level</label>
+      <label class="field-label">Difficulty Level</label>
       <select class="form-select" formControlName="difficultyLevel"
               (change)="onDifficultyChange()">
         <option value="" disabled selected>Select difficulty</option>
-        <option value="Easy">Easy</option>
-        <option value="Medium">Medium</option>
-        <option value="Hard">Hard</option>
+        <option value="Easy">🟢 Easy</option>
+        <option value="Medium">🟡 Medium</option>
+        <option value="Hard">🔴 Hard</option>
       </select>
 
-      <label>Number of Questions</label>
+      <label class="field-label">Number of Questions</label>
       <div class="question-row">
         <select class="form-select" formControlName="numberOfQuestions">
-          <option value="" disabled selected>Select number</option>
+          <option value="" disabled selected>Select count</option>
           <option *ngFor="let q of questionOptions" [value]="q">{{ q }}</option>
         </select>
-        <button type="button" class="max-btn"
-                (click)="setMaxQuestions()">
-          Use Max ({{ maxQuestions }})
+        <button type="button" class="max-btn" (click)="setMaxQuestions()">
+          Max ({{ maxQuestions }})
         </button>
       </div>
 
-      <button class="glass-button" type="submit"
+      <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+      <div *ngIf="errorMessage"   class="alert alert-danger">{{ errorMessage }}</div>
+
+      <button class="btn-primary" type="submit"
               [disabled]="quizForm.invalid || maxQuestions === 0">
-        Create Quiz
+        🚀 Create Quiz
       </button>
 
     </form>

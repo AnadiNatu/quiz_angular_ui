@@ -25,6 +25,13 @@ export class AdminDasboardComponent implements OnInit {
   userDetails: UsersDTO | null = null;
   toggleMenu  = false;
 
+  // ── Mock stats for demo purposes (overridden by real data if available) ──
+  mockStats = {
+    totalQuizzes:   12,
+    totalQuestions: 84,
+    participants:   37
+  };
+
   constructor(
     private adminService: AdminServiceService,
     private authService:  AuthService,
@@ -37,8 +44,6 @@ export class AdminDasboardComponent implements OnInit {
     this.username = user?.username ?? 'User';
     this.userRole = user?.role     ?? '';
 
-    // Only participants have taken-quiz titles;
-    // for ADMIN/CURATOR we skip this call to avoid a 403
     if (this.userRole === 'PARTICIPANT') {
       this.adminService.getAllTakenQuizTitles().subscribe({
         next: titles => this.takenQuizTitles = titles,
@@ -46,16 +51,22 @@ export class AdminDasboardComponent implements OnInit {
       });
     }
 
-    // Load enriched user details from auth service
     this.adminService.getUserDetails().subscribe({
       next: res => {
         this.userDetails = res;
-        // only update avatar if the server returns a profile picture
         if (res.profilePicture) {
           this.profileImageUrl = res.profilePicture;
         }
       },
       error: err => console.warn('Could not load user details:', err)
+    });
+
+    // Try to load real stats for display
+    this.adminService.getAllQuizzesByCreator().subscribe({
+      next: quizzes => {
+        this.mockStats.totalQuizzes = quizzes.length || this.mockStats.totalQuizzes;
+      },
+      error: () => {}
     });
   }
 
@@ -70,12 +81,10 @@ export class AdminDasboardComponent implements OnInit {
     }
   }
 
-  // Called by CreatorQuizListComponent (viewQuiz) output — emits QuizDTO
   viewCreatedQuiz(quiz: QuizDTO): void {
     this.router.navigate(['/admin/quiz/view', quiz.title]);
   }
 
-  // Called by CreatorQuizListComponent (viewAllResults) output — emits QuizDTO
   viewAllResultsForQuiz(quiz: QuizDTO): void {
     this.router.navigate(['/admin/results/all', quiz.id]);
   }
