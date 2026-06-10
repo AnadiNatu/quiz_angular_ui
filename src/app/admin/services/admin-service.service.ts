@@ -7,7 +7,9 @@ import {
   CreateQuestionDTO, QuestionDTO, QuestionResponseDTO,
   CreateQuizDTO, QuizDTO,
   QuizSubmitRequest, ResultDTO,
-  QuizResultDTO, QuizStatsDTO
+  QuizResultDTO, QuizStatsDTO,
+  AiGeneratedQuestionDTO,
+  AiQuestionGenerateRequest
 } from '../models/admin-dtos';
 import { UsersDTO } from '../../auth/models/dtos';
 import { UserStorageService } from '../../auth/services/user-storage/user-storage.service';
@@ -213,6 +215,15 @@ export class AdminServiceService {
     return this.http.post(
       `${this.NOTIFY}/email/report/${userId}`, null,
       { headers: this.h(), responseType: 'text' }
+    );
+  }
+
+  // POST Generate Question Using AI
+   generateAiQuestions(req: AiQuestionGenerateRequest): Observable<AiGeneratedQuestionDTO[]> {
+    return this.http.post<AiGeneratedQuestionDTO[]>(
+      `${this.QUESTION}/ai/generate`,
+      req,
+      { headers: this.jh() }
     );
   }
 }

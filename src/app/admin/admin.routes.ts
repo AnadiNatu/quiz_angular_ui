@@ -68,5 +68,11 @@ export const adminRoutes: Routes = [
     loadComponent: () =>
       import('./components/all-user-result/all-user-result.component')
         .then(m => m.AllUserResultComponent)
+  },
+    {
+    path: 'ai-generate-question',
+    loadComponent: () =>
+      import('./components/ai-generate-question/ai-generate-question.component')
+        .then(m => m.AiGenerateQuestionComponent)
   }
 ];

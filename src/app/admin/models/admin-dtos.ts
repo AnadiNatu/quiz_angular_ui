@@ -9,6 +9,10 @@ export interface CreateQuestionDTO {
   option2: string;
   option3: string;
   option4: string;
+
+    creatorAuthServiceId?: number;
+  creatorUsername?:      string;
+  creatorRole?:          string;
 }
 
 export interface QuestionDTO {
@@ -163,4 +167,24 @@ export interface QuestionWrapper {
   option2: string;
   option3: string;
   option4: string;
+}
+
+// ─── AI DTO ──────────────────────────────────────
+
+/** Body sent to POST /api/questions/ai/generate */
+export interface AiQuestionGenerateRequest {
+  topic:      string;   // e.g. "Binary Trees"
+  category:   string;   // must match an existing category
+  difficulty: string;   // EASY | MEDIUM | HARD
+  count:      number;   // 1–20
+}
+ 
+/** Shape of each object returned in the preview list */
+export interface AiGeneratedQuestionDTO {
+  question:      string;
+  optionA:       string;
+  optionB:       string;
+  optionC:       string;
+  optionD:       string;
+  correctAnswer: string;  // full text of the correct option
 }
