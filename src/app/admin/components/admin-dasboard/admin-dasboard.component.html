@@ -1,3 +1,6 @@
+<!-- src/app/admin/components/admin-dasboard/admin-dasboard.component.html -->
+<!-- ONLY CHANGES: added "✨ AI Questions" nav-link + "✨ AI Questions" quick-link button -->
+
 <!-- ── Sticky Navbar ──────────────────────────────── -->
 <nav class="glass-navbar">
   <div class="nav-brand" (click)="toggleAdminCard()">
@@ -25,6 +28,12 @@
        routerLinkActive="active-link"
        class="nav-link"
        (click)="toggleMenu = false">📝 Add Question</a>
+
+    <!-- ✨ NEW -->
+    <a routerLink="/admin/ai-generate-question"
+       routerLinkActive="active-link"
+       class="nav-link ai-nav-link"
+       (click)="toggleMenu = false">✨ AI Questions</a>
 
     <a routerLink="/admin/all/quizzes"
        routerLinkActive="active-link"
@@ -162,10 +171,12 @@
       Quick Actions
     </div>
     <div class="quick-links">
-      <a routerLink="/admin/create-quiz"     class="quick-link-btn">➕ New Quiz</a>
-      <a routerLink="/admin/create-question" class="quick-link-btn">📝 New Question</a>
-      <a routerLink="/admin/all/quizzes"     class="quick-link-btn">📋 All Quizzes</a>
-      <a routerLink="/admin/creator/quizzes" class="quick-link-btn">📂 My Quizzes</a>
+      <a routerLink="/admin/create-quiz"          class="quick-link-btn">➕ New Quiz</a>
+      <a routerLink="/admin/create-question"       class="quick-link-btn">📝 New Question</a>
+      <!-- ✨ NEW -->
+      <a routerLink="/admin/ai-generate-question"  class="quick-link-btn ai-quick-btn">✨ AI Questions</a>
+      <a routerLink="/admin/all/quizzes"           class="quick-link-btn">📋 All Quizzes</a>
+      <a routerLink="/admin/creator/quizzes"       class="quick-link-btn">📂 My Quizzes</a>
     </div>
   </div>
 

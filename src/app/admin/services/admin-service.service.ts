@@ -226,4 +226,17 @@ export class AdminServiceService {
       { headers: this.jh() }
     );
   }
+
+  // CATEGORIES  (from question-service, no new entity)
+  
+  // GET /api/questions/categories
+  getCategories(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.QUESTION}/categories`, { headers: this.jh() });
+  }
+ 
+  // GET /api/quiz/categories
+  getQuizCategories(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.QUIZ}/categories`, { headers: this.jh() });
+  }
+ 
 }

@@ -1,11 +1,40 @@
+<!-- src/app/admin/components/creator-quiz-list/creator-quiz-list.component.html -->
+
 <div class="quiz-list-wrap">
 
-  <div *ngIf="showAllQuizzes" class="search-row">
-    <input type="text"
-           class="search-input"
-           [(ngModel)]="searchText"
-           placeholder="Search quizzes by title..." />
-    <button class="search-btn" (click)="onSearch()">🔍 Search</button>
+  <!-- ── Filter row ────────────────────────────────────────────────────────── -->
+  <div class="filter-row">
+
+    <!-- Title search (always visible) -->
+    <div class="search-row">
+      <input type="text"
+             class="search-input"
+             [(ngModel)]="searchText"
+             placeholder="Search quizzes by title..."
+             (ngModelChange)="onSearch()" />
+      <button class="search-btn" (click)="onSearch()">🔍</button>
+    </div>
+
+    <!-- Category dropdown -->
+    <select class="category-select"
+            [(ngModel)]="selectedCategory"
+            (change)="onCategoryChange()">
+      <option value="">All Categories</option>
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+
+    <!-- Clear filters (shown when any filter is active) -->
+    <button class="clear-btn"
+            *ngIf="selectedCategory || searchText"
+            (click)="clearFilters()">✕ Clear</button>
+  </div>
+
+  <!-- Active filter pills -->
+  <div class="filter-pills" *ngIf="selectedCategory">
+    <span class="filter-pill">
+      📚 {{ selectedCategory }}
+      <button class="pill-remove" (click)="selectedCategory = ''; onCategoryChange()">✕</button>
+    </span>
   </div>
 
   <div *ngIf="errorMessage" class="error-banner">⚠️ {{ errorMessage }}</div>
