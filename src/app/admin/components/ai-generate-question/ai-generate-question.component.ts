@@ -197,4 +197,24 @@ export class AiGenerateQuestionComponent implements OnInit {
     this.storage.logout();
     this.router.navigate(['/login']);
   }
+
+  decreaseCount(): void {
+  const current = Number(
+    this.generateForm.get('count')?.value || 1
+  );
+
+  this.generateForm.get('count')?.setValue(
+    Math.max(1, current - 1)
+  );
+}
+
+increaseCount(): void {
+  const current = Number(
+    this.generateForm.get('count')?.value || 1
+  );
+
+  this.generateForm.get('count')?.setValue(
+    Math.min(20, current + 1)
+  );
+}
 }
